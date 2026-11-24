@@ -51,6 +51,12 @@ and English are both first-class.
 - **Multi-company from day one.** `core.Company`, `core.Membership` and the abstract
   `core.CompanyOwned` base every business table must inherit. Changing this later
   touches every table.
+- **Mobile app planned (later).** The API lives under `/api/v1/` so published app versions
+  keep working while the web evolves. Web uses session cookies; the mobile app will need
+  token login added alongside (not built yet). Business rules stay in Django services,
+  never in React, so a mobile client gets identical behaviour.
+- **Hosted locally until the system is finished.** No production deployment yet; run the
+  steps below. Production hardening (gunicorn behind a reverse proxy, backups) comes later.
 - **Money is a string in JSON** and a `Decimal` in Python and `decimal.js`. Never a float.
 - **AI never posts entries.** Later features save drafts that an accountant approves.
 

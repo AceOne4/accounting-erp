@@ -9,13 +9,13 @@ pytestmark = pytest.mark.django_db
 
 
 def test_health_is_public():
-    res = APIClient().get("/api/health/")
+    res = APIClient().get("/api/v1/health/")
     assert res.status_code == 200
     assert res.json() == {"status": "ok"}
 
 
 def test_me_requires_login():
-    assert APIClient().get("/api/me/").status_code in (401, 403)
+    assert APIClient().get("/api/v1/me/").status_code in (401, 403)
 
 
 def test_me_lists_only_own_companies():
@@ -29,7 +29,7 @@ def test_me_lists_only_own_companies():
 
     client = APIClient()
     client.force_login(user)
-    data = client.get("/api/me/").json()
+    data = client.get("/api/v1/me/").json()
     assert data["companies"] == [{"id": mine.id, "name": "Nile Trading", "role": "reviewer"}]
 
 
@@ -44,4 +44,4 @@ def test_one_membership_per_user_and_company():
 def test_openapi_schema_builds():
     res = APIClient().get("/api/schema/")
     assert res.status_code == 200
-    assert b"/api/health/" in res.content
+    assert b"/api/v1/health/" in res.content

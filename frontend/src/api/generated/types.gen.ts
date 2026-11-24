@@ -19,28 +19,28 @@ export type Me = {
     username: string;
 };
 
-export type HealthRetrieveData = {
+export type V1HealthRetrieveData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/health/';
+    url: '/api/v1/health/';
 };
 
-export type HealthRetrieveResponses = {
+export type V1HealthRetrieveResponses = {
     200: Health;
 };
 
-export type HealthRetrieveResponse = HealthRetrieveResponses[keyof HealthRetrieveResponses];
+export type V1HealthRetrieveResponse = V1HealthRetrieveResponses[keyof V1HealthRetrieveResponses];
 
-export type MeRetrieveData = {
+export type V1MeRetrieveData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/api/me/';
+    url: '/api/v1/me/';
 };
 
-export type MeRetrieveResponses = {
+export type V1MeRetrieveResponses = {
     200: Me;
 };
 
-export type MeRetrieveResponse = MeRetrieveResponses[keyof MeRetrieveResponses];
+export type V1MeRetrieveResponse = V1MeRetrieveResponses[keyof V1MeRetrieveResponses];

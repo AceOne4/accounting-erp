@@ -24,7 +24,7 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
     if (token) headers.set('X-CSRFToken', token)
   }
 
-  const res = await fetch(`/api${path}`, { ...init, method, headers, credentials: 'same-origin' })
+  const res = await fetch(`/api/v1${path}`, { ...init, method, headers, credentials: 'same-origin' })
   const text = await res.text()
   const body: unknown = text ? JSON.parse(text) : null
   if (!res.ok) throw new ApiError(res.status, body)

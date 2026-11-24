@@ -3,11 +3,11 @@ info:
   title: Accounting ERP API
   version: 0.1.0
 paths:
-  /api/health/:
+  /api/v1/health/:
     get:
-      operationId: health_retrieve
+      operationId: v1_health_retrieve
       tags:
-      - health
+      - v1
       responses:
         '200':
           content:
@@ -15,11 +15,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Health'
           description: ''
-  /api/me/:
+  /api/v1/me/:
     get:
-      operationId: me_retrieve
+      operationId: v1_me_retrieve
       tags:
-      - me
+      - v1
       security:
       - cookieAuth: []
       responses:
