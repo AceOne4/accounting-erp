@@ -5,21 +5,25 @@ import { Navigate, Route, Routes } from 'react-router'
 import { api } from '../api/client'
 import { SubNav } from '../components/common'
 import { Button } from '../components/ui'
-import { useSession } from '../session'
+import { useSession } from '../sessionContext'
 import { CountDetail, CountForm, CountList } from './InventoryCounts'
 import { ItemCard, StockLevels } from './InventoryReports'
 import { ReceiptForm, ReceiptList } from './InventoryReceipts'
 import { Setup } from './InventorySetup'
 import { TransferForm, TransferList } from './InventoryTransfers'
 
+let releaseTimer: ReturnType<typeof setTimeout> | undefined
+
 export default function Inventory() {
   const { t } = useTranslation()
   const { company } = useSession()
 
   // Only one person at a time works in inventory. Leaving the module frees the lock.
+  // The release waits a moment so a quick re-mount (React StrictMode in development) cancels it.
   useEffect(() => {
+    if (releaseTimer) clearTimeout(releaseTimer)
     return () => {
-      void api('/inventory/lock/release/', { method: 'POST' }).catch(() => undefined)
+      releaseTimer = setTimeout(() => void api('/inventory/lock/release/', { method: 'POST' }).catch(() => undefined), 300)
     }
   }, [company?.id])
 

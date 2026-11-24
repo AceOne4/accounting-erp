@@ -3,17 +3,13 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { api } from '../api/client'
-import type { ItemCard as ItemCardData, PaginatedProductList, StockLevels as StockLevelsData, Warehouse } from '../api/generated'
+import type { ItemCard as ItemCardData, PaginatedProductList, StockLevels as StockLevelsData } from '../api/generated'
 import { Badge, Field, inputClass } from '../components/ui'
 import { Card, Empty, Loading, TableWrap, Td, Th } from '../components/common'
 import { formatMoney, formatQty } from '../money'
 import { localName } from '../names'
-import { useSession } from '../session'
-
-export function useWarehouses() {
-  const { company } = useSession()
-  return useQuery({ queryKey: ['warehouses', company?.id], queryFn: () => api<Warehouse[]>('/inventory/warehouses/') })
-}
+import { useWarehouses } from '../inventoryData'
+import { useSession } from '../sessionContext'
 
 export function StockLevels() {
   const { t, i18n } = useTranslation()

@@ -1203,3 +1203,7 @@ msgstr "لا تملك صلاحية ترحيل القيود"
 #: treasury/api.py:115
 msgid "You are not allowed to create adjustment entries"
 msgstr "لا تملك صلاحية إنشاء قيود التسوية"
+
+#: core/views.py:134
+msgid "Current password is wrong"
+msgstr "كلمة المرور الحالية غير صحيحة"

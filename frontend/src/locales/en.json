@@ -21,12 +21,14 @@
     "reports": "Reports",
     "partners": "Customers & suppliers",
     "accounts": "Chart of accounts",
-    "users": "Users"
+    "users": "Users",
+    "home": "Home"
   },
   "shell": {
     "company": "Company",
     "logout": "Sign out",
-    "noCompany": "Your account is not a member of any company yet. Ask an administrator."
+    "noCompany": "Your account is not a member of any company yet. Ask an administrator.",
+    "menu": "Menu"
   },
   "role": {
     "accountant": "Accountant",
@@ -127,7 +129,9 @@
     "side": {
       "debit": "Dr",
       "credit": "Cr"
-    }
+    },
+    "print": "Print",
+    "csv": "Export CSV"
   },
   "partners": {
     "new": "New customer / supplier",
@@ -269,5 +273,24 @@
     "countNote": "Enter the quantity actually found. The system records the difference from the book quantity.",
     "bookQty": "Book qty",
     "countedQty": "Counted qty"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "body": "The screen crashed. Your saved data is safe. Reload and try again.",
+    "reload": "Reload"
+  },
+  "notFound": {
+    "title": "This page does not exist",
+    "home": "Back to the home page"
+  },
+  "home": {
+    "drafts": "Draft entries waiting to be posted"
+  },
+  "password": {
+    "title": "Change password",
+    "current": "Current password",
+    "new": "New password",
+    "again": "New password again",
+    "mismatch": "The two new passwords do not match."
   }
 }

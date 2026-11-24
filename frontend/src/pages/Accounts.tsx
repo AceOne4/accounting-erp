@@ -2,12 +2,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { api, ApiError, errorMessages } from '../api/client'
+import { apiMessages } from '../api/messages'
+import { api } from '../api/client'
 import type { Account, TypeEnum } from '../api/generated'
 import { Badge, Button, ErrorList, Field, inputClass } from '../components/ui'
 import { Card, Loading, TableWrap, Td, Th } from '../components/common'
 import { localName } from '../names'
-import { useSession } from '../session'
+import { useSession } from '../sessionContext'
 
 const TYPES: TypeEnum[] = ['asset', 'liability', 'equity', 'revenue', 'expense']
 type Draft = { id?: number; code: string; name: string; name_en: string; type: TypeEnum; parent: string; is_leaf: boolean; requires_partner: boolean }
@@ -30,7 +31,7 @@ export default function Accounts() {
       return d.id ? api(`/accounts/${d.id}/`, { method: 'PUT', body }) : api('/accounts/', { method: 'POST', body })
     },
     onSuccess: () => { setDraft(null); setErrors([]); void queryClient.invalidateQueries({ queryKey: ['accounts'] }) },
-    onError: (e) => setErrors(e instanceof ApiError ? errorMessages(e.body) : [t('common.loadFailed')]),
+    onError: (e) => setErrors(apiMessages(e, t)),
   })
 
   const accounts = list.data ?? []

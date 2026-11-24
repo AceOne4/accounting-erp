@@ -2,11 +2,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { api, ApiError, errorMessages } from '../api/client'
+import { apiMessages } from '../api/messages'
+import { api } from '../api/client'
 import type { Partner, PartnerKindEnum } from '../api/generated'
 import { Badge, Button, ErrorList, Field, inputClass } from '../components/ui'
 import { Card, Empty, Loading, TableWrap, Td, Th } from '../components/common'
-import { useSession } from '../session'
+import { useSession } from '../sessionContext'
 
 const KINDS: PartnerKindEnum[] = ['customer', 'supplier', 'both']
 type Draft = { id?: number; name: string; kind: PartnerKindEnum; tax_id: string; phone: string; is_active: boolean }
@@ -27,12 +28,12 @@ export default function Partners() {
       return d.id ? api(`/partners/${d.id}/`, { method: 'PUT', body }) : api('/partners/', { method: 'POST', body })
     },
     onSuccess: () => { setDraft(null); setErrors([]); void queryClient.invalidateQueries({ queryKey: ['partners'] }) },
-    onError: (e) => setErrors(e instanceof ApiError ? errorMessages(e.body) : [t('common.loadFailed')]),
+    onError: (e) => setErrors(apiMessages(e, t)),
   })
   const remove = useMutation({
     mutationFn: (id: number) => api(`/partners/${id}/`, { method: 'DELETE' }),
     onSuccess: () => void queryClient.invalidateQueries({ queryKey: ['partners'] }),
-    onError: (e) => setErrors(e instanceof ApiError ? errorMessages(e.body) : [t('common.loadFailed')]),
+    onError: (e) => setErrors(apiMessages(e, t)),
   })
 
   function submit(e: FormEvent) {

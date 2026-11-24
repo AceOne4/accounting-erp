@@ -2,14 +2,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { api, ApiError, errorMessages } from '../api/client'
+import { apiMessages } from '../api/messages'
+import { api } from '../api/client'
 import type { PaginatedProductList, Product, Unit, Warehouse } from '../api/generated'
 import { Badge, Button, ErrorList, Field, inputClass } from '../components/ui'
 import { Card, Loading, TableWrap, Td, Th } from '../components/common'
 import { localName } from '../names'
-import { useSession } from '../session'
+import { useSession } from '../sessionContext'
 
-const msgs = (e: unknown, fallback: string) => (e instanceof ApiError ? errorMessages(e.body) : [fallback])
 
 export function Setup() {
   const { t } = useTranslation()
@@ -43,12 +43,12 @@ function Products() {
       return d.id ? api(`/inventory/products/${d.id}/`, { method: 'PUT', body }) : api('/inventory/products/', { method: 'POST', body })
     },
     onSuccess: () => { setDraft(null); setErrors([]); void queryClient.invalidateQueries({ queryKey: ['products'] }); void queryClient.invalidateQueries({ queryKey: ['products-all'] }) },
-    onError: (e) => setErrors(msgs(e, t('common.loadFailed'))),
+    onError: (e) => setErrors(apiMessages(e, t)),
   })
   const remove = useMutation({
     mutationFn: (id: number) => api(`/inventory/products/${id}/`, { method: 'DELETE' }),
     onSuccess: () => void queryClient.invalidateQueries({ queryKey: ['products'] }),
-    onError: (e) => setErrors(msgs(e, t('common.loadFailed'))),
+    onError: (e) => setErrors(apiMessages(e, t)),
   })
   const edit = (p: Product) => { setDraft({ id: p.id, code: p.code, name: p.name, name_en: p.name_en ?? '', unit: String(p.unit), tax_exempt: p.tax_exempt ?? false, tax_rate: p.tax_rate ?? '', is_active: p.is_active ?? true }); setErrors([]) }
   function submit(e: FormEvent) { e.preventDefault(); if (draft) save.mutate(draft) }
@@ -116,7 +116,7 @@ function Warehouses() {
   const add = useMutation({
     mutationFn: () => api('/inventory/warehouses/', { method: 'POST', body: JSON.stringify({ code, name }) }),
     onSuccess: () => { setCode(''); setName(''); setErrors([]); void queryClient.invalidateQueries({ queryKey: ['warehouses'] }) },
-    onError: (e) => setErrors(msgs(e, t('common.loadFailed'))),
+    onError: (e) => setErrors(apiMessages(e, t)),
   })
   const toggle = useMutation({
     mutationFn: (w: Warehouse) => api(`/inventory/warehouses/${w.id}/`, { method: 'PUT', body: JSON.stringify({ code: w.code, name: w.name, name_en: w.name_en ?? '', is_active: !w.is_active }) }),
@@ -152,7 +152,7 @@ function Units() {
   const add = useMutation({
     mutationFn: () => api('/inventory/units/', { method: 'POST', body: JSON.stringify({ name }) }),
     onSuccess: () => { setName(''); setErrors([]); void queryClient.invalidateQueries({ queryKey: ['units'] }) },
-    onError: (e) => setErrors(msgs(e, t('common.loadFailed'))),
+    onError: (e) => setErrors(apiMessages(e, t)),
   })
   return (
     <Card title={t('inventory.units')}>

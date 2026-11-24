@@ -7,7 +7,7 @@ import { api } from '../api/client'
 import type { PaginatedJournalEntryList } from '../api/generated'
 import { Badge, Button, inputClass } from '../components/ui'
 import { formatMoney } from '../money'
-import { useSession } from '../session'
+import { useSession } from '../sessionContext'
 
 export default function JournalList() {
   const { t } = useTranslation()

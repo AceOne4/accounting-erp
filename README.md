@@ -128,6 +128,8 @@ A receipt or transfer is locked once its entry is posted or its stock has been u
 entries are edited only from the receipt; cash-count entries cannot be edited (post or delete
 only). Receipts, transfers and counts are numbered per company (RC-/TR-/CNT-00001).
 
+**Own password:** every user can change it from the app (click your name in the header), or `POST /api/v1/auth/password/`.
+
 **Users:** a system admin manages the company's members in the app or at `/api/v1/users/`
 (add, change role, reset password, remove). Nobody can change their own access.
 
@@ -142,9 +144,10 @@ and fails if anything is untranslated or the committed files are stale.
 **Frontend:** sign-in, company switcher, Arabic RTL / English LTR, and screens for journal
 entries, customers & suppliers, chart of accounts, treasury (vouchers, cash counts), inventory
 (stock levels, item card, receipts, transfers, counts, products/warehouses/units), reports
-(trial balance, ledger, statement) and users. Browser tests: `cd frontend && npx playwright test`
+(trial balance, ledger, statement; each with Print and CSV export) and users. There is a home page with draft count, box balances and stock value, a phone-width menu, a 404 page and a crash screen. Heavier screens load on demand. Lists page through results. Browser tests (journal, every new screen, Arabic/RTL on all screens, roles, inventory lock between two users, password change, paging, phone width, CSV): `cd frontend && npx playwright test`
 against a running backend and Vite (see `playwright.config.ts`; set `LOGIN_THROTTLE=1000/min`
-on the backend for the test run, because every test signs in).
+on the backend for the test run, because every test signs in). Test users needed: a chief accountant (`E2E_USER`),
+a system admin (`E2E_ADMIN`), and users named `acc` (accountant) and `rev` (reviewer), all with the password in `E2E_PASS`.
 
 **Not built yet:** AI draft features, the mobile app, production deployment (gunicorn, HTTPS,
 backups). Accounts 504 and 505 exist in the chart but nothing posts to them yet.

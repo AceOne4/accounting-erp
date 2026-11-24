@@ -14,6 +14,7 @@ urlpatterns = [
     path("auth/login/", views.LoginView.as_view(), name="auth-login"),
     path("auth/token/", views.TokenView.as_view(), name="auth-token"),
     path("auth/token/revoke/", views.TokenRevokeView.as_view(), name="auth-token-revoke"),
+    path("auth/password/", views.PasswordChangeView.as_view(), name="auth-password"),
     path("auth/logout/", views.LogoutView.as_view(), name="auth-logout"),
     *router.urls,
 ]

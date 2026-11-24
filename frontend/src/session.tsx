@@ -1,8 +1,9 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 
 import { api, ApiError, setCompanyId } from './api/client'
-import type { CompanyRole, Me } from './api/generated'
+import type { Me } from './api/generated'
+import { SessionContext, type Session } from './sessionContext'
 
 const COMPANY_KEY = 'erp.company'
 
@@ -15,17 +16,6 @@ function savedCompany(): number | null {
   }
 }
 
-type Session = {
-  user: Me | null
-  loading: boolean
-  company: CompanyRole | null
-  setCompany: (id: number) => void
-  can: (capability: string) => boolean
-  login: (username: string, password: string) => Promise<void>
-  logout: () => Promise<void>
-}
-
-const SessionContext = createContext<Session | null>(null)
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient()
@@ -90,10 +80,4 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const value: Session = { user, loading: me.isPending, company, setCompany, can, login, logout }
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
-}
-
-export function useSession(): Session {
-  const ctx = useContext(SessionContext)
-  if (!ctx) throw new Error('useSession must be used inside SessionProvider')
-  return ctx
 }

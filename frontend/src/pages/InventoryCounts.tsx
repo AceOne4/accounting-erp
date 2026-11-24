@@ -3,19 +3,21 @@ import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router'
 
-import { api, ApiError, errorMessages } from '../api/client'
+import { apiMessages } from '../api/messages'
+import { api } from '../api/client'
 import type { Count, PaginatedCountList } from '../api/generated'
 import { Button, ErrorList, Field, inputClass } from '../components/ui'
-import { Card, Empty, Loading, TableWrap, Td, Th } from '../components/common'
+import { Card, Empty, Loading, Pager, TableWrap, Td, Th } from '../components/common'
 import { formatQty } from '../money'
-import { useSession } from '../session'
-import { emptyLine, LineEditor, type DocLine } from './InventoryDocs'
-import { useWarehouses } from './InventoryReports'
+import { useSession } from '../sessionContext'
+import { emptyLine, useWarehouses, type DocLine } from '../inventoryData'
+import { LineEditor } from './InventoryDocs'
 
 export function CountList() {
   const { t } = useTranslation()
   const { can, company } = useSession()
-  const list = useQuery({ queryKey: ['counts', company?.id], queryFn: () => api<PaginatedCountList>('/inventory/counts/') })
+  const [page, setPage] = useState(1)
+  const list = useQuery({ queryKey: ['counts', company?.id, page], queryFn: () => api<PaginatedCountList>(`/inventory/counts/?page=${page}`) })
   return (
     <div className="space-y-4">
       <div className="flex justify-between">
@@ -33,6 +35,7 @@ export function CountList() {
           </tbody>
         </TableWrap>
       ))}
+      <Pager page={page} setPage={setPage} data={list.data} />
     </div>
   )
 }
@@ -52,7 +55,7 @@ export function CountForm() {
       lines: lines.map((l) => ({ product: Number(l.product), counted_qty: l.counted_qty })),
     }) }),
     onSuccess: (c) => { void queryClient.invalidateQueries({ queryKey: ['counts'] }); navigate(`/inventory/counts/${c.id}`) },
-    onError: (e) => setErrors(e instanceof ApiError ? errorMessages(e.body) : [t('common.loadFailed')]),
+    onError: (e) => setErrors(apiMessages(e, t)),
   })
   function submit(e: FormEvent) { e.preventDefault(); setErrors([]); save.mutate() }
   return (

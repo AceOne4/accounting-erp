@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Navigate, Route, Routes } from 'react-router'
 
@@ -7,12 +7,14 @@ import { api } from '../api/client'
 import type { Account, GeneralLedger, Partner, PartnerStatement, TrialBalance } from '../api/generated'
 import { Badge, Field, inputClass } from '../components/ui'
 import { BalanceText, Card, Empty, Loading, SubNav, TableWrap, Td, Th } from '../components/common'
+import { downloadCsv, tablesToRows } from '../csv'
 import { formatMoney } from '../money'
 import { accountLabel, localName } from '../names'
-import { useSession } from '../session'
+import { useSession } from '../sessionContext'
 
 export default function Reports() {
   const { t } = useTranslation()
+  const box = useRef<HTMLDivElement>(null)
   return (
     <section>
       <h2 className="mb-4 text-xl font-semibold">{t('nav.reports')}</h2>
@@ -23,12 +25,18 @@ export default function Reports() {
           { to: '/reports/statement', label: t('report.statement') },
         ]}
       />
+      <div className="mb-3 flex gap-2 print:hidden">
+        <button className="rounded-md border px-3 py-1 text-sm" onClick={() => window.print()}>{t('report.print')}</button>
+        <button className="rounded-md border px-3 py-1 text-sm" onClick={() => { if (box.current) downloadCsv(`${t('nav.reports')}.csv`, tablesToRows(box.current)) }}>{t('report.csv')}</button>
+      </div>
+      <div ref={box}>
       <Routes>
         <Route index element={<Navigate to="trial-balance" replace />} />
         <Route path="trial-balance" element={<TrialBalanceReport />} />
         <Route path="ledger" element={<LedgerReport />} />
         <Route path="statement" element={<StatementReport />} />
       </Routes>
+      </div>
     </section>
   )
 }

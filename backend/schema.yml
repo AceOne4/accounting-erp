@@ -213,6 +213,40 @@ paths:
           type: integer
         description: Company to act in. Optional when the user belongs to exactly
           one.
+  /api/v1/auth/password/:
+    post:
+      operationId: v1_auth_password_create
+      description: |-
+        A signed-in user changes their own password. The current password is required, and the
+        new one goes through Django's password validators. Other sessions are signed out.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordChangeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordChangeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordChangeRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
   /api/v1/auth/token/:
     post:
       operationId: v1_auth_token_create
@@ -3131,6 +3165,18 @@ components:
       - posted_credit
       - posted_debit
       - rows
+    PasswordChangeRequest:
+      type: object
+      properties:
+        current_password:
+          type: string
+          minLength: 1
+        new_password:
+          type: string
+          minLength: 1
+      required:
+      - current_password
+      - new_password
     PasswordRequest:
       type: object
       properties:

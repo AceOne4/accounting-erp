@@ -1,22 +1,24 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router'
 
-import { api, ApiError, errorMessages } from '../api/client'
+import { apiMessages } from '../api/messages'
+import { api } from '../api/client'
 import type { PaginatedTransferList, Transfer } from '../api/generated'
 import { Button, ErrorList, Field, inputClass } from '../components/ui'
-import { Card, Empty, Loading, TableWrap, Td, Th } from '../components/common'
-import { useSession } from '../session'
-import { emptyLine, LineEditor, type DocLine } from './InventoryDocs'
-import { useWarehouses } from './InventoryReports'
+import { Card, Empty, Loading, Pager, TableWrap, Td, Th } from '../components/common'
+import { useSession } from '../sessionContext'
+import { emptyLine, useWarehouses, type DocLine } from '../inventoryData'
+import { LineEditor } from './InventoryDocs'
 
 const today = () => new Date().toISOString().slice(0, 10)
 
 export function TransferList() {
   const { t } = useTranslation()
   const { can, company } = useSession()
-  const list = useQuery({ queryKey: ['transfers', company?.id], queryFn: () => api<PaginatedTransferList>('/inventory/transfers/') })
+  const [page, setPage] = useState(1)
+  const list = useQuery({ queryKey: ['transfers', company?.id, page], queryFn: () => api<PaginatedTransferList>(`/inventory/transfers/?page=${page}`) })
   const wh = useWarehouses()
   const code = (id: number) => wh.data?.find((w) => w.id === id)?.code ?? id
   return (
@@ -36,34 +38,35 @@ export function TransferList() {
           </tbody>
         </TableWrap>
       ))}
+      <Pager page={page} setPage={setPage} data={list.data} />
     </div>
   )
 }
 
 export function TransferForm() {
-  const { t } = useTranslation()
   const { id } = useParams()
+  const { company } = useSession()
+  const existing = useQuery({ queryKey: ['transfer', company?.id, id], enabled: !!id, queryFn: () => api<Transfer>(`/inventory/transfers/${id}/`) })
+  if (id && (existing.isPending || existing.isError)) return <Loading query={existing} />
+  return <TransferEditor key={id ?? 'new'} id={id} existing={existing.data} />
+}
+
+function TransferEditor({ id, existing }: { id?: string; existing?: Transfer }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
-  const { can, company } = useSession()
+  const { can } = useSession()
   const queryClient = useQueryClient()
   const warehouses = useWarehouses()
-  const existing = useQuery({ queryKey: ['transfer', company?.id, id], enabled: !!id, queryFn: () => api<Transfer>(`/inventory/transfers/${id}/`) })
-  const [date, setDate] = useState(today())
-  const [from, setFrom] = useState('')
-  const [to, setTo] = useState('')
-  const [notes, setNotes] = useState('')
-  const [lines, setLines] = useState<DocLine[]>([emptyLine()])
+  const [date, setDate] = useState(existing?.date ?? today())
+  const [from, setFrom] = useState(existing ? String(existing.from_warehouse) : '')
+  const [to, setTo] = useState(existing ? String(existing.to_warehouse) : '')
+  const [notes, setNotes] = useState(existing?.notes ?? '')
+  const [lines, setLines] = useState<DocLine[]>(existing ? existing.lines.map((l) => ({ product: String(l.product), quantity: l.quantity })) : [emptyLine()])
   const [errors, setErrors] = useState<string[]>([])
 
-  useEffect(() => {
-    const r = existing.data
-    if (!r) return
-    setDate(r.date ?? today()); setFrom(String(r.from_warehouse)); setTo(String(r.to_warehouse)); setNotes(r.notes ?? '')
-    setLines(r.lines.map((l) => ({ product: String(l.product), quantity: l.quantity })))
-  }, [existing.data])
 
   const done = () => { void queryClient.invalidateQueries({ queryKey: ['transfers'] }); void queryClient.invalidateQueries({ queryKey: ['stock-levels'] }); navigate('/inventory/transfers') }
-  const onError = (e: unknown) => setErrors(e instanceof ApiError ? errorMessages(e.body) : [t('common.loadFailed')])
+  const onError = (e: unknown) => setErrors(apiMessages(e, t))
   const save = useMutation({
     mutationFn: () => api('/inventory/transfers/', { method: 'POST', body: JSON.stringify({
       date, from_warehouse: Number(from), to_warehouse: Number(to), notes,
@@ -74,13 +77,12 @@ export function TransferForm() {
   const remove = useMutation({ mutationFn: () => api(`/inventory/transfers/${id}/`, { method: 'DELETE' }), onSuccess: done, onError })
   function submit(e: FormEvent) { e.preventDefault(); setErrors([]); save.mutate() }
 
-  if (id && (existing.isPending || existing.isError)) return <Loading query={existing} />
-  const locked = existing.data?.locked_reason ?? ''
+  const locked = existing?.locked_reason ?? ''
   const readOnly = !!id // transfers are never edited: delete and re-enter
   const options = warehouses.data?.filter((w) => w.is_active || String(w.id) === from || String(w.id) === to) ?? []
   return (
     <form onSubmit={submit} className="space-y-4">
-      <h3 className="text-lg font-semibold">{id ? `${t('inventory.transfer')} ${existing.data?.number}` : t('inventory.newTransfer')}</h3>
+      <h3 className="text-lg font-semibold">{id ? `${t('inventory.transfer')} ${existing?.number}` : t('inventory.newTransfer')}</h3>
       {locked && <p role="status" className="rounded-md bg-amber-50 p-3 text-sm text-amber-800">{locked}</p>}
       <Card>
         <div className="grid gap-3 sm:grid-cols-3">

@@ -23,6 +23,7 @@ test('wrong password shows an error and stays on login', async ({ page }) => {
 
 test('create, balance-check, save, post and lock a journal entry', async ({ page }) => {
   await login(page)
+  await page.getByRole('navigation').first().getByRole('link', { name: /قيود اليومية|journal entries/i }).click()
   await expect(page.getByRole('heading', { name: /قيود اليومية|journal entries/i })).toBeVisible()
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
   await page.screenshot({ path: `${SHOTS}/02-list-ar.png` })
@@ -57,8 +58,8 @@ test('create, balance-check, save, post and lock a journal entry', async ({ page
 
 test('English layout is left-to-right', async ({ page }) => {
   await login(page)
-  await expect(page.getByRole('heading', { name: /قيود اليومية/ })).toBeVisible()
   await page.getByRole('button', { name: 'English' }).click()
+  await page.getByRole('navigation').first().getByRole('link', { name: /journal entries/i }).click()
   await expect(page.getByRole('heading', { name: /journal entries/i })).toBeVisible()
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr')
   await page.screenshot({ path: `${SHOTS}/05-list-en.png` })

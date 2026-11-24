@@ -4,13 +4,14 @@ import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
-import { api, ApiError, errorMessages } from '../api/client'
+import { apiMessages } from '../api/messages'
+import { api } from '../api/client'
 import type { Account, CashCount, PaginatedCashCountList, Partner, TreasuryOverview, VoucherKindEnum, VoucherResult } from '../api/generated'
 import { Badge, Button, ErrorList, Field, inputClass } from '../components/ui'
-import { Card, Empty, Loading, TableWrap, Td, Th } from '../components/common'
+import { Card, Empty, Loading, Pager, TableWrap, Td, Th } from '../components/common'
 import { formatMoney } from '../money'
 import { accountLabel } from '../names'
-import { useSession } from '../session'
+import { useSession } from '../sessionContext'
 
 const KINDS: { kind: VoucherKindEnum; partner: 'customer' | 'supplier' | null; account?: boolean }[] = [
   { kind: 'collect', partner: 'customer' },
@@ -21,7 +22,6 @@ const KINDS: { kind: VoucherKindEnum; partner: 'customer' | 'supplier' | null; a
   { kind: 'supplier', partner: 'supplier' },
 ]
 const today = () => new Date().toISOString().slice(0, 10)
-const fail = (e: unknown, fallback: string) => (e instanceof ApiError ? errorMessages(e.body) : [fallback])
 
 export default function Treasury() {
   const { t } = useTranslation()
@@ -98,7 +98,7 @@ function VoucherForm() {
       }),
     }),
     onSuccess: (r) => { setErrors([]); setResult(r); setPostNow(false); setAmount(''); setReference(''); setNote(''); void queryClient.invalidateQueries({ queryKey: ['treasury'] }) },
-    onError: (e) => { setResult(null); setErrors(fail(e, t('common.loadFailed'))) },
+    onError: (e) => { setResult(null); setErrors(apiMessages(e, t)) },
   })
   function submit(e: FormEvent) { e.preventDefault(); setResult(null); create.mutate() }
 
@@ -174,7 +174,7 @@ function CashCountForm({ overview }: { overview: TreasuryOverview }) {
       }),
     }),
     onSuccess: (c) => { setErrors([]); setSaved(c); setQty({}); setNotes(''); setAdjust(false); void queryClient.invalidateQueries({ queryKey: ['treasury'] }) },
-    onError: (e) => { setSaved(null); setErrors(fail(e, t('common.loadFailed'))) },
+    onError: (e) => { setSaved(null); setErrors(apiMessages(e, t)) },
   })
 
   if (!can('treasury.count')) return null
@@ -213,7 +213,8 @@ function CashCountForm({ overview }: { overview: TreasuryOverview }) {
 function CashCountHistory() {
   const { t } = useTranslation()
   const { company } = useSession()
-  const q = useQuery({ queryKey: ['treasury', company?.id, 'counts'], queryFn: () => api<PaginatedCashCountList>('/treasury/cash-counts/') })
+  const [page, setPage] = useState(1)
+  const q = useQuery({ queryKey: ['treasury', company?.id, 'counts', page], queryFn: () => api<PaginatedCashCountList>(`/treasury/cash-counts/?page=${page}`) })
   if (!q.data || q.data.results.length === 0) return null
   return (
     <Card title={t('treasury.history')}>
@@ -225,6 +226,7 @@ function CashCountHistory() {
           ))}
         </tbody>
       </TableWrap>
+      <Pager page={page} setPage={setPage} data={q.data} />
     </Card>
   )
 }

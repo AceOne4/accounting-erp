@@ -1,21 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 
-import { api } from '../api/client'
-import type { PaginatedProductList } from '../api/generated'
+import { emptyLine, useProducts, type DocLine } from '../inventoryData'
 import { inputClass } from '../components/ui'
 import { localName } from '../names'
-import { useSession } from '../session'
-
-export type DocLine = { product: string; quantity: string; unit_cost?: string; counted_qty?: string }
-
-export function useProducts() {
-  const { company } = useSession()
-  return useQuery({
-    queryKey: ['products-all', company?.id],
-    queryFn: () => api<PaginatedProductList>('/inventory/products/?active=1&page_size=1000'),
-  })
-}
 
 /** Rows of product + number fields shared by receipts, transfers and counts. */
 export function LineEditor({
@@ -51,7 +38,7 @@ export function LineEditor({
         </div>
       ))}
       {!readOnly && (
-        <button type="button" className="text-sm underline" onClick={() => onChange([...lines, { product: '', quantity: '', unit_cost: '', counted_qty: '' }])}>
+        <button type="button" className="text-sm underline" onClick={() => onChange([...lines, emptyLine()])}>
           + {t('inventory.addLine')}
         </button>
       )}
@@ -59,4 +46,3 @@ export function LineEditor({
   )
 }
 
-export const emptyLine = (): DocLine => ({ product: '', quantity: '', unit_cost: '', counted_qty: '' })

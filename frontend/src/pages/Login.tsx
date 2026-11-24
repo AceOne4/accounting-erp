@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { ApiError } from '../api/client'
 import { Button, ErrorList, Field, inputClass } from '../components/ui'
 import { LANGUAGES, setLanguage } from '../i18n'
-import { useSession } from '../session'
+import { useSession } from '../sessionContext'
 
 export default function Login() {
   const { t, i18n } = useTranslation()

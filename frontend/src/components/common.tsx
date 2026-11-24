@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router'
 
 import { ApiError } from '../api/client'
+import { apiMessages } from '../api/messages'
 import type { Balance } from '../api/generated'
 import { formatMoney } from '../money'
 
@@ -60,15 +61,25 @@ export function BalanceText({ value }: { value: Balance }) {
 export function Loading({ query }: { query: { isPending: boolean; isError: boolean; error?: unknown } }) {
   const { t } = useTranslation()
   if (query.isError) {
-    const e = query.error
-    if (e instanceof ApiError && e.status === 423) {
-      const b = e.body as { holder?: string; minutes_left?: number }
-      return <p role="alert" className="rounded-md bg-amber-50 p-3 text-amber-800">{t('inventory.locked', { holder: b.holder ?? '', minutes: b.minutes_left ?? '' })}</p>
-    }
-    return <p className="text-red-700">{t('common.loadFailed')}</p>
+    const locked = query.error instanceof ApiError && query.error.status === 423
+    return <p role="alert" className={locked ? 'rounded-md bg-amber-50 p-3 text-amber-800' : 'text-red-700'}>{apiMessages(query.error, t).join(' ')}</p>
   }
   if (query.isPending) return <p className="text-slate-500">…</p>
   return null
+}
+
+export function Pager({ page, setPage, data }: { page: number; setPage: (p: number) => void; data?: { count: number; next?: string | null; previous?: string | null } }) {
+  const { t } = useTranslation()
+  if (!data || (!data.next && !data.previous)) return null
+  return (
+    <div className="flex items-center justify-between text-sm">
+      <span>{t('common.count', { count: data.count })}</span>
+      <div className="flex gap-2">
+        <button className="rounded-md border px-3 py-1 disabled:opacity-50" disabled={!data.previous} onClick={() => setPage(page - 1)}>{t('common.previous')}</button>
+        <button className="rounded-md border px-3 py-1 disabled:opacity-50" disabled={!data.next} onClick={() => setPage(page + 1)}>{t('common.next')}</button>
+      </div>
+    </div>
+  )
 }
 
 export function Empty({ children }: { children: ReactNode }) {

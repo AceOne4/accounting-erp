@@ -1,24 +1,26 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Decimal from 'decimal.js'
-import { useEffect, useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router'
 
-import { api, ApiError, errorMessages } from '../api/client'
+import { apiMessages } from '../api/messages'
+import { api } from '../api/client'
 import type { PaginatedReceiptList, Partner, Receipt } from '../api/generated'
 import { Badge, Button, ErrorList, Field, inputClass } from '../components/ui'
-import { Card, Empty, Loading, TableWrap, Td, Th } from '../components/common'
+import { Card, Empty, Loading, Pager, TableWrap, Td, Th } from '../components/common'
 import { formatMoney } from '../money'
-import { useSession } from '../session'
-import { emptyLine, LineEditor, type DocLine } from './InventoryDocs'
-import { useWarehouses } from './InventoryReports'
+import { useSession } from '../sessionContext'
+import { emptyLine, useWarehouses, type DocLine } from '../inventoryData'
+import { LineEditor } from './InventoryDocs'
 
 const today = () => new Date().toISOString().slice(0, 10)
 
 export function ReceiptList() {
   const { t } = useTranslation()
   const { can, company } = useSession()
-  const list = useQuery({ queryKey: ['receipts', company?.id], queryFn: () => api<PaginatedReceiptList>('/inventory/receipts/') })
+  const [page, setPage] = useState(1)
+  const list = useQuery({ queryKey: ['receipts', company?.id, page], queryFn: () => api<PaginatedReceiptList>(`/inventory/receipts/?page=${page}`) })
   return (
     <div className="space-y-4">
       <div className="flex justify-between">
@@ -40,41 +42,41 @@ export function ReceiptList() {
           </tbody>
         </TableWrap>
       ))}
+      <Pager page={page} setPage={setPage} data={list.data} />
     </div>
   )
 }
 
 export function ReceiptForm() {
-  const { t } = useTranslation()
   const { id } = useParams()
+  const { company } = useSession()
+  const existing = useQuery({ queryKey: ['receipt', company?.id, id], enabled: !!id, queryFn: () => api<Receipt>(`/inventory/receipts/${id}/`) })
+  if (id && (existing.isPending || existing.isError)) return <Loading query={existing} />
+  return <ReceiptEditor key={id ?? 'new'} id={id} existing={existing.data} />
+}
+
+function ReceiptEditor({ id, existing }: { id?: string; existing?: Receipt }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { can, company } = useSession()
   const queryClient = useQueryClient()
   const warehouses = useWarehouses()
   const partners = useQuery({ queryKey: ['partners', company?.id], queryFn: () => api<Partner[]>('/partners/') })
-  const existing = useQuery({ queryKey: ['receipt', company?.id, id], enabled: !!id, queryFn: () => api<Receipt>(`/inventory/receipts/${id}/`) })
 
-  const [date, setDate] = useState(today())
-  const [warehouse, setWarehouse] = useState('')
-  const [supplier, setSupplier] = useState('')
-  const [invoice, setInvoice] = useState('')
-  const [notes, setNotes] = useState('')
-  const [lines, setLines] = useState<DocLine[]>([emptyLine()])
+  const [date, setDate] = useState(existing?.date ?? today())
+  const [warehouse, setWarehouse] = useState(existing ? String(existing.warehouse) : '')
+  const [supplier, setSupplier] = useState(existing ? String(existing.supplier) : '')
+  const [invoice, setInvoice] = useState(existing?.supplier_invoice ?? '')
+  const [notes, setNotes] = useState(existing?.notes ?? '')
+  const [lines, setLines] = useState<DocLine[]>(existing ? existing.lines.map((l) => ({ product: String(l.product), quantity: l.quantity, unit_cost: l.unit_cost })) : [emptyLine()])
   const [errors, setErrors] = useState<string[]>([])
 
-  useEffect(() => {
-    const r = existing.data
-    if (!r) return
-    setDate(r.date ?? today()); setWarehouse(String(r.warehouse)); setSupplier(String(r.supplier))
-    setInvoice(r.supplier_invoice ?? ''); setNotes(r.notes ?? '')
-    setLines(r.lines.map((l) => ({ product: String(l.product), quantity: l.quantity, unit_cost: l.unit_cost })))
-  }, [existing.data])
 
-  const locked = existing.data?.locked_reason ?? ''
+  const locked = existing?.locked_reason ?? ''
   const readOnly = !!id && !!locked
   const total = lines.reduce((s, l) => { try { return s.plus(new Decimal(l.quantity || 0).times(l.unit_cost || 0)) } catch { return s } }, new Decimal(0))
   const done = () => { void queryClient.invalidateQueries({ queryKey: ['receipts'] }); void queryClient.invalidateQueries({ queryKey: ['receipt'] }); void queryClient.invalidateQueries({ queryKey: ['stock-levels'] }); navigate('/inventory/receipts') }
-  const onError = (e: unknown) => setErrors(e instanceof ApiError ? errorMessages(e.body) : [t('common.loadFailed')])
+  const onError = (e: unknown) => setErrors(apiMessages(e, t))
 
   const save = useMutation({
     mutationFn: () => {
@@ -90,10 +92,9 @@ export function ReceiptForm() {
   const suppliers = (partners.data ?? []).filter((p) => p.is_active && (p.kind === 'supplier' || p.kind === 'both'))
   function submit(e: FormEvent) { e.preventDefault(); setErrors([]); save.mutate() }
 
-  if (id) { if (existing.isPending || existing.isError) return <Loading query={existing} /> }
   return (
     <form onSubmit={submit} className="space-y-4">
-      <h3 className="text-lg font-semibold">{id ? `${t('inventory.receipt')} ${existing.data?.number}` : t('inventory.newReceipt')}</h3>
+      <h3 className="text-lg font-semibold">{id ? `${t('inventory.receipt')} ${existing?.number}` : t('inventory.newReceipt')}</h3>
       {locked && <p role="status" className="rounded-md bg-amber-50 p-3 text-sm text-amber-800">{locked}</p>}
       <Card>
         <div className="grid gap-3 sm:grid-cols-4">
@@ -123,7 +124,7 @@ export function ReceiptForm() {
           <Button type="button" variant="secondary" onClick={() => { if (window.confirm(t('inventory.confirmDelete'))) remove.mutate() }}>{t('common.delete')}</Button>
         )}
         <Link className="px-3 py-2 text-sm underline" to="/inventory/receipts">{t('common.cancel')}</Link>
-        {existing.data?.journal_entry && <Link className="px-3 py-2 text-sm underline" to={`/journal/${existing.data.journal_entry}`}>{t('inventory.viewEntry')}</Link>}
+        {existing?.journal_entry && <Link className="px-3 py-2 text-sm underline" to={`/journal/${existing.journal_entry}`}>{t('inventory.viewEntry')}</Link>}
       </div>
     </form>
   )

@@ -121,3 +121,23 @@ def test_token_login_rejects_bad_password(company, make_user):
     make_user("tok", company, Role.CHIEF)
     r = APIClient().post("/api/v1/auth/token/", {"username": "tok", "password": "nope"}, format="json")
     assert r.status_code in (401, 403)
+
+
+def test_user_changes_own_password(db, company, make_user, client_for):
+    user = make_user("self", company, "accountant")
+    user.set_password("Old-pass-12345")
+    user.save()
+    client = client_for(user)
+    url = "/api/v1/auth/password/"
+
+    wrong = client.post(url, {"current_password": "nope", "new_password": "New-pass-98765"}, format="json")
+    assert wrong.status_code == 400 and "current_password" in wrong.json()
+
+    weak = client.post(url, {"current_password": "Old-pass-12345", "new_password": "123"}, format="json")
+    assert weak.status_code == 400 and "new_password" in weak.json()
+
+    ok = client.post(url, {"current_password": "Old-pass-12345", "new_password": "New-pass-98765"}, format="json")
+    assert ok.status_code == 204
+    user.refresh_from_db()
+    assert user.check_password("New-pass-98765")
+    assert client.get("/api/v1/me/").status_code == 200  # still signed in

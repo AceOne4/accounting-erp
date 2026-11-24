@@ -8,7 +8,7 @@ import type { Account, JournalEntry, Partner } from '../api/generated'
 import { Badge, Button, ErrorList, Field, inputClass } from '../components/ui'
 import { emptyLine, isBalanced, isBlank, lineProblem, totals, type DraftLine } from '../journal'
 import { formatMoney } from '../money'
-import { useSession } from '../session'
+import { useSession } from '../sessionContext'
 
 let keySeq = 0
 const nextKey = () => `l${++keySeq}`

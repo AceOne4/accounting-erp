@@ -451,6 +451,11 @@ export type PartnerStatement = {
     incomplete_entries: number;
 };
 
+export type PasswordChangeRequest = {
+    current_password: string;
+    new_password: string;
+};
+
 export type PasswordRequest = {
     password: string;
 };
@@ -1175,6 +1180,28 @@ export type V1AuthLogoutCreateResponses = {
 };
 
 export type V1AuthLogoutCreateResponse = V1AuthLogoutCreateResponses[keyof V1AuthLogoutCreateResponses];
+
+export type V1AuthPasswordCreateData = {
+    body: PasswordChangeRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/password/';
+};
+
+export type V1AuthPasswordCreateResponses = {
+    /**
+     * No response body
+     */
+    204: void;
+};
+
+export type V1AuthPasswordCreateResponse = V1AuthPasswordCreateResponses[keyof V1AuthPasswordCreateResponses];
 
 export type V1AuthTokenCreateData = {
     body: LoginRequestWritable;

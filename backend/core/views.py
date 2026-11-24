@@ -109,6 +109,39 @@ class LogoutView(APIView):
         return Response(status=204)
 
 
+class PasswordChangeView(APIView):
+    """A signed-in user changes their own password. The current password is required, and the
+    new one goes through Django's password validators. Other sessions are signed out."""
+
+    throttle_scope = "login"
+
+    @extend_schema(
+        request=inline_serializer(
+            "PasswordChange",
+            {"current_password": serializers.CharField(), "new_password": serializers.CharField()},
+        ),
+        responses={204: None},
+    )
+    def post(self, request):
+        from django.contrib.auth import update_session_auth_hash
+        from django.contrib.auth.password_validation import validate_password
+        from django.core.exceptions import ValidationError as DjangoValidationError
+        from django.utils.translation import gettext as _
+
+        current = request.data.get("current_password") or ""
+        new = request.data.get("new_password") or ""
+        if not request.user.check_password(current):
+            raise serializers.ValidationError({"current_password": [_("Current password is wrong")]})
+        try:
+            validate_password(new, request.user)
+        except DjangoValidationError as error:
+            raise serializers.ValidationError({"new_password": list(error.messages)})
+        request.user.set_password(new)
+        request.user.save(update_fields=["password"])
+        update_session_auth_hash(request, request.user)
+        return Response(status=204)
+
+
 class TokenView(APIView):
     """POST: exchange username + password for an API token (for the mobile app).
     Send it as `Authorization: Token <key>`; no CSRF is needed for token requests."""

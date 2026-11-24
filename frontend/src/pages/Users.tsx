@@ -2,11 +2,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { api, ApiError, errorMessages } from '../api/client'
+import { apiMessages } from '../api/messages'
+import { api } from '../api/client'
 import type { Member, RoleEnum } from '../api/generated'
 import { Badge, Button, ErrorList, Field, inputClass } from '../components/ui'
 import { Card, Loading, TableWrap, Td, Th } from '../components/common'
-import { useSession } from '../session'
+import { useSession } from '../sessionContext'
 
 const ROLES: RoleEnum[] = ['accountant', 'reviewer', 'chief_accountant', 'system_admin']
 
@@ -21,7 +22,7 @@ export default function Users() {
   const [notice, setNotice] = useState('')
 
   const refresh = () => void queryClient.invalidateQueries({ queryKey: ['users'] })
-  const fail = (e: unknown) => { setNotice(''); setErrors(e instanceof ApiError ? errorMessages(e.body) : [t('common.loadFailed')]) }
+  const fail = (e: unknown) => { setNotice(''); setErrors(apiMessages(e, t)) }
 
   const create = useMutation({
     mutationFn: () => api('/users/', { method: 'POST', body: JSON.stringify(form) }),
