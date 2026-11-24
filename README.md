@@ -90,7 +90,26 @@ then `cd frontend && npm run api:types`.
 
 ## Status
 
-Skeleton only: tenancy models, health and `me` endpoints, translations, RTL switch,
-money helpers, CI. The accounting and inventory domain code from the old Django
-project is not ported yet. Planned order: services first (move rules out of views and
-admin), then the API, then one React screen at a time.
+**Ported from the old project (phase A, accounting core):**
+chart of accounts, customers/suppliers, journal entries, posting rules, trial balance,
+general ledger, customer/supplier statement, roles. Everything is per company.
+
+- Rules live in `backend/accounting/services.py` (the API only calls them). Posted
+  entries are immutable, enforced in the model as well as the service. Posting locks the
+  entry row. A line is debit or credit, positive, on a leaf account, and lines on
+  receivable/payable accounts need a customer/supplier.
+- Reports live in `backend/accounting/reports.py` and are scoped to one company.
+- Roles are per company (`core.Membership`): accountant, reviewer, chief accountant,
+  system admin. The capability map is `backend/core/permissions.py`.
+- Every request names its company with the `X-Company-Id` header (optional when the user
+  belongs to only one). A user can never act in a company they are not a member of.
+
+New company with the default chart of accounts:
+
+```bash
+python manage.py seed_company "My Company" --user yourusername --role chief_accountant
+```
+
+**Not ported yet:** treasury and cash counts (phase B), inventory (phase C), the React
+screens, Arabic translations of API messages, user/role management screens.
+Run `pytest` for the backend suite (57 tests).

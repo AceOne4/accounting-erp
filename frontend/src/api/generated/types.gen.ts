@@ -4,20 +4,431 @@ export type ClientOptions = {
     baseUrl: `${string}://${string}` | (string & {});
 };
 
+export type Account = {
+    readonly id: number;
+    code: string;
+    /**
+     * Account name
+     */
+    name: string;
+    /**
+     * Account name (English)
+     */
+    name_en?: string;
+    type: TypeEnum;
+    parent?: number | null;
+    /**
+     * Leaf account (accepts entries)
+     */
+    is_leaf?: boolean;
+    /**
+     * Requires customer/supplier
+     *
+     * Enable for receivable and payable accounts
+     */
+    requires_partner?: boolean;
+};
+
+export type AccountBrief = {
+    id: number;
+    code: string;
+    name: string;
+    name_en: string;
+};
+
+export type AccountRequest = {
+    code: string;
+    /**
+     * Account name
+     */
+    name: string;
+    /**
+     * Account name (English)
+     */
+    name_en?: string;
+    type: TypeEnum;
+    parent?: number | null;
+    /**
+     * Leaf account (accepts entries)
+     */
+    is_leaf?: boolean;
+    /**
+     * Requires customer/supplier
+     *
+     * Enable for receivable and payable accounts
+     */
+    requires_partner?: boolean;
+};
+
+export type Balance = {
+    amount: string;
+    side: SideEnum | BlankEnum;
+};
+
+export type BlankEnum = '';
+
 export type CompanyRole = {
     id: number;
     name: string;
     role: string;
 };
 
+export type GeneralLedger = {
+    ledgers: Array<Ledger>;
+};
+
 export type Health = {
     status: string;
+};
+
+export type JournalEntry = {
+    readonly id: number;
+    date: string;
+    description: string;
+    status: StatusEnum;
+    /**
+     * AI generated
+     */
+    readonly is_ai_generated: boolean;
+    readonly created_by: string;
+    readonly created_at: string;
+    readonly posted_by: string;
+    readonly posted_at: string | null;
+    readonly total_debit: string;
+    readonly total_credit: string;
+    readonly missing_partner_lines: number;
+    lines: Array<JournalLine>;
+};
+
+export type JournalEntryRequest = {
+    date: string;
+    description: string;
+    lines: Array<JournalLineRequest>;
+};
+
+export type JournalLine = {
+    readonly id: number;
+    account: number;
+    partner?: number | null;
+    debit?: string;
+    credit?: string;
+    /**
+     * Notes
+     */
+    memo?: string;
+};
+
+export type JournalLineRequest = {
+    account: number;
+    partner?: number | null;
+    debit?: string;
+    credit?: string;
+    /**
+     * Notes
+     */
+    memo?: string;
+};
+
+/**
+ * * `customer` - Customer
+ * * `supplier` - Supplier
+ * * `both` - Customer and supplier
+ */
+export type KindEnum = 'customer' | 'supplier' | 'both';
+
+export type Ledger = {
+    account: AccountBrief;
+    is_parent: boolean;
+    opening: Balance;
+    rows: Array<LedgerRow>;
+    total_debit: string;
+    total_credit: string;
+    closing: Balance;
+};
+
+export type LedgerRow = {
+    date: string;
+    entry_id: number;
+    status: string;
+    description: string;
+    memo: string;
+    partner: PartnerBrief | null;
+    sub_account: AccountBrief | null;
+    debit: string;
+    credit: string;
+    balance: Balance;
 };
 
 export type Me = {
     companies: Array<CompanyRole>;
     username: string;
 };
+
+export type PaginatedJournalEntryList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<JournalEntry>;
+};
+
+export type Partner = {
+    readonly id: number;
+    name: string;
+    /**
+     * Type
+     */
+    kind: KindEnum;
+    tax_id?: string;
+    phone?: string;
+    /**
+     * Active
+     */
+    is_active?: boolean;
+};
+
+export type PartnerBrief = {
+    id: number;
+    name: string;
+};
+
+export type PartnerRequest = {
+    name: string;
+    /**
+     * Type
+     */
+    kind: KindEnum;
+    tax_id?: string;
+    phone?: string;
+    /**
+     * Active
+     */
+    is_active?: boolean;
+};
+
+export type PartnerStatement = {
+    partner: StatementPartner;
+    rows: Array<StatementRow>;
+    opening_posted: Balance;
+    opening_all: Balance;
+    posted_debit: string;
+    posted_credit: string;
+    draft_debit: string;
+    draft_credit: string;
+    closing_posted: Balance;
+    closing_all: Balance;
+    draft_net: Balance;
+    has_draft: boolean;
+    incomplete_entries: number;
+};
+
+/**
+ * * `debit` - debit
+ * * `credit` - credit
+ * * `` -
+ */
+export type SideEnum = 'debit' | 'credit';
+
+export type StatementPartner = {
+    id: number;
+    name: string;
+    kind: string;
+};
+
+export type StatementRow = {
+    date: string;
+    entry_id: number;
+    status: string;
+    description: string;
+    account: AccountBrief;
+    memo: string;
+    debit: string;
+    credit: string;
+    balance_posted: Balance;
+    balance_all: Balance;
+};
+
+/**
+ * * `draft` - Draft
+ * * `posted` - Posted
+ */
+export type StatusEnum = 'draft' | 'posted';
+
+export type TrialBalance = {
+    rows: Array<TrialBalanceRow>;
+    total_debit: string;
+    total_credit: string;
+    total_balance_debit: string;
+    total_balance_credit: string;
+    is_balanced: boolean;
+};
+
+export type TrialBalanceRow = {
+    account_id: number;
+    code: string;
+    name: string;
+    name_en: string;
+    debit: string;
+    credit: string;
+    balance_debit: string;
+    balance_credit: string;
+};
+
+/**
+ * * `asset` - Assets
+ * * `liability` - Liabilities
+ * * `equity` - Equity
+ * * `revenue` - Revenue
+ * * `expense` - Expenses
+ */
+export type TypeEnum = 'asset' | 'liability' | 'equity' | 'revenue' | 'expense';
+
+export type AccountWritable = {
+    code: string;
+    /**
+     * Account name
+     */
+    name: string;
+    /**
+     * Account name (English)
+     */
+    name_en?: string;
+    type: TypeEnum;
+    parent?: number | null;
+    /**
+     * Leaf account (accepts entries)
+     */
+    is_leaf?: boolean;
+    /**
+     * Requires customer/supplier
+     *
+     * Enable for receivable and payable accounts
+     */
+    requires_partner?: boolean;
+};
+
+export type JournalEntryWritable = {
+    date: string;
+    description: string;
+    lines: Array<JournalLineWritable>;
+};
+
+export type JournalLineWritable = {
+    account: number;
+    partner?: number | null;
+    debit?: string;
+    credit?: string;
+    /**
+     * Notes
+     */
+    memo?: string;
+};
+
+export type PaginatedJournalEntryListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<JournalEntryWritable>;
+};
+
+export type PartnerWritable = {
+    name: string;
+    /**
+     * Type
+     */
+    kind: KindEnum;
+    tax_id?: string;
+    phone?: string;
+    /**
+     * Active
+     */
+    is_active?: boolean;
+};
+
+export type V1AccountsListData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/accounts/';
+};
+
+export type V1AccountsListResponses = {
+    200: Array<Account>;
+};
+
+export type V1AccountsListResponse = V1AccountsListResponses[keyof V1AccountsListResponses];
+
+export type V1AccountsCreateData = {
+    body: AccountRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/accounts/';
+};
+
+export type V1AccountsCreateResponses = {
+    201: Account;
+};
+
+export type V1AccountsCreateResponse = V1AccountsCreateResponses[keyof V1AccountsCreateResponses];
+
+export type V1AccountsRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا Account.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/accounts/{id}/';
+};
+
+export type V1AccountsRetrieveResponses = {
+    200: Account;
+};
+
+export type V1AccountsRetrieveResponse = V1AccountsRetrieveResponses[keyof V1AccountsRetrieveResponses];
+
+export type V1AccountsUpdateData = {
+    body: AccountRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا Account.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/accounts/{id}/';
+};
+
+export type V1AccountsUpdateResponses = {
+    200: Account;
+};
+
+export type V1AccountsUpdateResponse = V1AccountsUpdateResponses[keyof V1AccountsUpdateResponses];
 
 export type V1HealthRetrieveData = {
     body?: never;
@@ -32,6 +443,157 @@ export type V1HealthRetrieveResponses = {
 
 export type V1HealthRetrieveResponse = V1HealthRetrieveResponses[keyof V1HealthRetrieveResponses];
 
+export type V1JournalEntriesListData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: {
+        date_from?: string;
+        date_to?: string;
+        incomplete?: boolean;
+        /**
+         * رقم الصفحة ضمن النتائج المقسمة.
+         */
+        page?: number;
+        q?: string;
+        /**
+         * * `draft` - draft
+         * * `posted` - posted
+         */
+        status?: 'draft' | 'posted';
+    };
+    url: '/api/v1/journal-entries/';
+};
+
+export type V1JournalEntriesListResponses = {
+    200: PaginatedJournalEntryList;
+};
+
+export type V1JournalEntriesListResponse = V1JournalEntriesListResponses[keyof V1JournalEntriesListResponses];
+
+export type V1JournalEntriesCreateData = {
+    body: JournalEntryRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/journal-entries/';
+};
+
+export type V1JournalEntriesCreateResponses = {
+    201: JournalEntry;
+};
+
+export type V1JournalEntriesCreateResponse = V1JournalEntriesCreateResponses[keyof V1JournalEntriesCreateResponses];
+
+export type V1JournalEntriesDestroyData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا Journal entry.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/journal-entries/{id}/';
+};
+
+export type V1JournalEntriesDestroyResponses = {
+    /**
+     * No response body
+     */
+    204: void;
+};
+
+export type V1JournalEntriesDestroyResponse = V1JournalEntriesDestroyResponses[keyof V1JournalEntriesDestroyResponses];
+
+export type V1JournalEntriesRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا Journal entry.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/journal-entries/{id}/';
+};
+
+export type V1JournalEntriesRetrieveResponses = {
+    200: JournalEntry;
+};
+
+export type V1JournalEntriesRetrieveResponse = V1JournalEntriesRetrieveResponses[keyof V1JournalEntriesRetrieveResponses];
+
+export type V1JournalEntriesUpdateData = {
+    body: JournalEntryRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا Journal entry.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/journal-entries/{id}/';
+};
+
+export type V1JournalEntriesUpdateResponses = {
+    200: JournalEntry;
+};
+
+export type V1JournalEntriesUpdateResponse = V1JournalEntriesUpdateResponses[keyof V1JournalEntriesUpdateResponses];
+
+export type V1JournalEntriesPostCreateData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا Journal entry.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/journal-entries/{id}/post/';
+};
+
+export type V1JournalEntriesPostCreateResponses = {
+    200: JournalEntry;
+};
+
+export type V1JournalEntriesPostCreateResponse = V1JournalEntriesPostCreateResponses[keyof V1JournalEntriesPostCreateResponses];
+
 export type V1MeRetrieveData = {
     body?: never;
     path?: never;
@@ -44,3 +606,195 @@ export type V1MeRetrieveResponses = {
 };
 
 export type V1MeRetrieveResponse = V1MeRetrieveResponses[keyof V1MeRetrieveResponses];
+
+export type V1PartnersListData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/partners/';
+};
+
+export type V1PartnersListResponses = {
+    200: Array<Partner>;
+};
+
+export type V1PartnersListResponse = V1PartnersListResponses[keyof V1PartnersListResponses];
+
+export type V1PartnersCreateData = {
+    body: PartnerRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/partners/';
+};
+
+export type V1PartnersCreateResponses = {
+    201: Partner;
+};
+
+export type V1PartnersCreateResponse = V1PartnersCreateResponses[keyof V1PartnersCreateResponses];
+
+export type V1PartnersDestroyData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا Customer / Supplier.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/partners/{id}/';
+};
+
+export type V1PartnersDestroyResponses = {
+    /**
+     * No response body
+     */
+    204: void;
+};
+
+export type V1PartnersDestroyResponse = V1PartnersDestroyResponses[keyof V1PartnersDestroyResponses];
+
+export type V1PartnersRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا Customer / Supplier.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/partners/{id}/';
+};
+
+export type V1PartnersRetrieveResponses = {
+    200: Partner;
+};
+
+export type V1PartnersRetrieveResponse = V1PartnersRetrieveResponses[keyof V1PartnersRetrieveResponses];
+
+export type V1PartnersUpdateData = {
+    body: PartnerRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا Customer / Supplier.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/partners/{id}/';
+};
+
+export type V1PartnersUpdateResponses = {
+    200: Partner;
+};
+
+export type V1PartnersUpdateResponse = V1PartnersUpdateResponses[keyof V1PartnersUpdateResponses];
+
+export type V1ReportsGeneralLedgerRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: {
+        account?: number;
+        date_from?: string;
+        date_to?: string;
+        /**
+         * * `posted` - posted
+         * * `all` - all
+         * * `draft` - draft
+         */
+        status?: 'posted' | 'all' | 'draft';
+    };
+    url: '/api/v1/reports/general-ledger/';
+};
+
+export type V1ReportsGeneralLedgerRetrieveResponses = {
+    200: GeneralLedger;
+};
+
+export type V1ReportsGeneralLedgerRetrieveResponse = V1ReportsGeneralLedgerRetrieveResponses[keyof V1ReportsGeneralLedgerRetrieveResponses];
+
+export type V1ReportsPartnerStatementRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query: {
+        date_from?: string;
+        date_to?: string;
+        partner: number;
+        /**
+         * * `all` - all
+         * * `posted` - posted
+         * * `draft` - draft
+         */
+        status?: 'all' | 'posted' | 'draft';
+    };
+    url: '/api/v1/reports/partner-statement/';
+};
+
+export type V1ReportsPartnerStatementRetrieveResponses = {
+    200: PartnerStatement;
+};
+
+export type V1ReportsPartnerStatementRetrieveResponse = V1ReportsPartnerStatementRetrieveResponses[keyof V1ReportsPartnerStatementRetrieveResponses];
+
+export type V1ReportsTrialBalanceRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: {
+        as_of?: string;
+    };
+    url: '/api/v1/reports/trial-balance/';
+};
+
+export type V1ReportsTrialBalanceRetrieveResponses = {
+    200: TrialBalance;
+};
+
+export type V1ReportsTrialBalanceRetrieveResponse = V1ReportsTrialBalanceRetrieveResponses[keyof V1ReportsTrialBalanceRetrieveResponses];

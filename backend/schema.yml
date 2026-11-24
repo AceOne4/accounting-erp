@@ -3,6 +3,138 @@ info:
   title: Accounting ERP API
   version: 0.1.0
 paths:
+  /api/v1/accounts/:
+    get:
+      operationId: v1_accounts_list
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+    post:
+      operationId: v1_accounts_create
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/accounts/{id}/:
+    get:
+      operationId: v1_accounts_retrieve
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا Account.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+          description: ''
+    put:
+      operationId: v1_accounts_update
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا Account.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+          description: ''
   /api/v1/health/:
     get:
       operationId: v1_health_retrieve
@@ -14,6 +146,227 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Health'
+          description: ''
+  /api/v1/journal-entries/:
+    get:
+      operationId: v1_journal_entries_list
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: query
+        name: date_from
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: date_to
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: incomplete
+        schema:
+          type: boolean
+      - name: page
+        required: false
+        in: query
+        description: رقم الصفحة ضمن النتائج المقسمة.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+          minLength: 1
+      - in: query
+        name: status
+        schema:
+          enum:
+          - draft
+          - posted
+          type: string
+          minLength: 1
+        description: |-
+          * `draft` - draft
+          * `posted` - posted
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedJournalEntryList'
+          description: ''
+    post:
+      operationId: v1_journal_entries_create
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JournalEntryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/JournalEntryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/JournalEntryRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntry'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/journal-entries/{id}/:
+    get:
+      operationId: v1_journal_entries_retrieve
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا Journal entry.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntry'
+          description: ''
+    put:
+      operationId: v1_journal_entries_update
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا Journal entry.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JournalEntryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/JournalEntryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/JournalEntryRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntry'
+          description: ''
+    delete:
+      operationId: v1_journal_entries_destroy
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا Journal entry.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/journal-entries/{id}/post/:
+    post:
+      operationId: v1_journal_entries_post_create
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا Journal entry.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntry'
           description: ''
   /api/v1/me/:
     get:
@@ -29,8 +382,398 @@ paths:
               schema:
                 $ref: '#/components/schemas/Me'
           description: ''
+  /api/v1/partners/:
+    get:
+      operationId: v1_partners_list
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Partner'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+    post:
+      operationId: v1_partners_create
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnerRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PartnerRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PartnerRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/partners/{id}/:
+    get:
+      operationId: v1_partners_retrieve
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا Customer / Supplier.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+          description: ''
+    put:
+      operationId: v1_partners_update
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا Customer / Supplier.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnerRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PartnerRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PartnerRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner'
+          description: ''
+    delete:
+      operationId: v1_partners_destroy
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا Customer / Supplier.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/reports/general-ledger/:
+    get:
+      operationId: v1_reports_general_ledger_retrieve
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: query
+        name: account
+        schema:
+          type: integer
+      - in: query
+        name: date_from
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: date_to
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: status
+        schema:
+          enum:
+          - posted
+          - all
+          - draft
+          type: string
+          default: posted
+          minLength: 1
+        description: |-
+          * `posted` - posted
+          * `all` - all
+          * `draft` - draft
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralLedger'
+          description: ''
+  /api/v1/reports/partner-statement/:
+    get:
+      operationId: v1_reports_partner_statement_retrieve
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: query
+        name: date_from
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: date_to
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: partner
+        schema:
+          type: integer
+        required: true
+      - in: query
+        name: status
+        schema:
+          enum:
+          - all
+          - posted
+          - draft
+          type: string
+          default: all
+          minLength: 1
+        description: |-
+          * `all` - all
+          * `posted` - posted
+          * `draft` - draft
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerStatement'
+          description: ''
+  /api/v1/reports/trial-balance/:
+    get:
+      operationId: v1_reports_trial_balance_retrieve
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: query
+        name: as_of
+        schema:
+          type: string
+          format: date
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrialBalance'
+          description: ''
 components:
   schemas:
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          maxLength: 20
+        name:
+          type: string
+          title: Account name
+          maxLength: 200
+        name_en:
+          type: string
+          title: Account name (English)
+          maxLength: 200
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        parent:
+          type: integer
+          nullable: true
+        is_leaf:
+          type: boolean
+          title: Leaf account (accepts entries)
+        requires_partner:
+          type: boolean
+          title: Requires customer/supplier
+          description: Enable for receivable and payable accounts
+      required:
+      - code
+      - id
+      - name
+      - type
+    AccountBrief:
+      type: object
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+        name:
+          type: string
+        name_en:
+          type: string
+      required:
+      - code
+      - id
+      - name
+      - name_en
+    AccountRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 20
+        name:
+          type: string
+          minLength: 1
+          title: Account name
+          maxLength: 200
+        name_en:
+          type: string
+          title: Account name (English)
+          maxLength: 200
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        parent:
+          type: integer
+          nullable: true
+        is_leaf:
+          type: boolean
+          title: Leaf account (accepts entries)
+        requires_partner:
+          type: boolean
+          title: Requires customer/supplier
+          description: Enable for receivable and payable accounts
+      required:
+      - code
+      - name
+      - type
+    Balance:
+      type: object
+      properties:
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        side:
+          oneOf:
+          - $ref: '#/components/schemas/SideEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+      required:
+      - amount
+      - side
+    BlankEnum:
+      enum:
+      - ''
     CompanyRole:
       type: object
       properties:
@@ -44,6 +787,15 @@ components:
       - id
       - name
       - role
+    GeneralLedger:
+      type: object
+      properties:
+        ledgers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ledger'
+      required:
+      - ledgers
     Health:
       type: object
       properties:
@@ -51,6 +803,226 @@ components:
           type: string
       required:
       - status
+    JournalEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        date:
+          type: string
+          format: date
+        description:
+          type: string
+          maxLength: 500
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          readOnly: true
+        is_ai_generated:
+          type: boolean
+          readOnly: true
+          title: AI generated
+        created_by:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        posted_by:
+          type: string
+          readOnly: true
+        posted_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        total_debit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+          readOnly: true
+        total_credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+          readOnly: true
+        missing_partner_lines:
+          type: integer
+          readOnly: true
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/JournalLine'
+      required:
+      - created_at
+      - created_by
+      - date
+      - description
+      - id
+      - is_ai_generated
+      - lines
+      - missing_partner_lines
+      - posted_at
+      - posted_by
+      - status
+      - total_credit
+      - total_debit
+    JournalEntryRequest:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        description:
+          type: string
+          minLength: 1
+          maxLength: 500
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/JournalLineRequest'
+      required:
+      - date
+      - description
+      - lines
+    JournalLine:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        account:
+          type: integer
+        partner:
+          type: integer
+          nullable: true
+        debit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+          default: '0.00'
+        credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+          default: '0.00'
+        memo:
+          type: string
+          title: Notes
+          maxLength: 300
+      required:
+      - account
+      - id
+    JournalLineRequest:
+      type: object
+      properties:
+        account:
+          type: integer
+        partner:
+          type: integer
+          nullable: true
+        debit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+          default: '0.00'
+        credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+          default: '0.00'
+        memo:
+          type: string
+          title: Notes
+          maxLength: 300
+      required:
+      - account
+    KindEnum:
+      enum:
+      - customer
+      - supplier
+      - both
+      type: string
+      description: |-
+        * `customer` - Customer
+        * `supplier` - Supplier
+        * `both` - Customer and supplier
+    Ledger:
+      type: object
+      properties:
+        account:
+          $ref: '#/components/schemas/AccountBrief'
+        is_parent:
+          type: boolean
+        opening:
+          $ref: '#/components/schemas/Balance'
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/LedgerRow'
+        total_debit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        total_credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        closing:
+          $ref: '#/components/schemas/Balance'
+      required:
+      - account
+      - closing
+      - is_parent
+      - opening
+      - rows
+      - total_credit
+      - total_debit
+    LedgerRow:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        entry_id:
+          type: integer
+        status:
+          type: string
+        description:
+          type: string
+        memo:
+          type: string
+        partner:
+          allOf:
+          - $ref: '#/components/schemas/PartnerBrief'
+          nullable: true
+        sub_account:
+          allOf:
+          - $ref: '#/components/schemas/AccountBrief'
+          nullable: true
+        debit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        balance:
+          $ref: '#/components/schemas/Balance'
+      required:
+      - balance
+      - credit
+      - date
+      - debit
+      - description
+      - entry_id
+      - memo
+      - partner
+      - status
+      - sub_account
     Me:
       type: object
       properties:
@@ -63,6 +1035,289 @@ components:
       required:
       - companies
       - username
+    PaginatedJournalEntryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/JournalEntry'
+    Partner:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/KindEnum'
+          title: Type
+        tax_id:
+          type: string
+          maxLength: 30
+        phone:
+          type: string
+          maxLength: 30
+        is_active:
+          type: boolean
+          title: Active
+      required:
+      - id
+      - kind
+      - name
+    PartnerBrief:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+      - id
+      - name
+    PartnerRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/KindEnum'
+          title: Type
+        tax_id:
+          type: string
+          maxLength: 30
+        phone:
+          type: string
+          maxLength: 30
+        is_active:
+          type: boolean
+          title: Active
+      required:
+      - kind
+      - name
+    PartnerStatement:
+      type: object
+      properties:
+        partner:
+          $ref: '#/components/schemas/StatementPartner'
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatementRow'
+        opening_posted:
+          $ref: '#/components/schemas/Balance'
+        opening_all:
+          $ref: '#/components/schemas/Balance'
+        posted_debit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        posted_credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        draft_debit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        draft_credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        closing_posted:
+          $ref: '#/components/schemas/Balance'
+        closing_all:
+          $ref: '#/components/schemas/Balance'
+        draft_net:
+          $ref: '#/components/schemas/Balance'
+        has_draft:
+          type: boolean
+        incomplete_entries:
+          type: integer
+      required:
+      - closing_all
+      - closing_posted
+      - draft_credit
+      - draft_debit
+      - draft_net
+      - has_draft
+      - incomplete_entries
+      - opening_all
+      - opening_posted
+      - partner
+      - posted_credit
+      - posted_debit
+      - rows
+    SideEnum:
+      enum:
+      - debit
+      - credit
+      type: string
+      description: "* `debit` - debit\n* `credit` - credit\n* `` - "
+    StatementPartner:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        kind:
+          type: string
+      required:
+      - id
+      - kind
+      - name
+    StatementRow:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        entry_id:
+          type: integer
+        status:
+          type: string
+        description:
+          type: string
+        account:
+          $ref: '#/components/schemas/AccountBrief'
+        memo:
+          type: string
+        debit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        balance_posted:
+          $ref: '#/components/schemas/Balance'
+        balance_all:
+          $ref: '#/components/schemas/Balance'
+      required:
+      - account
+      - balance_all
+      - balance_posted
+      - credit
+      - date
+      - debit
+      - description
+      - entry_id
+      - memo
+      - status
+    StatusEnum:
+      enum:
+      - draft
+      - posted
+      type: string
+      description: |-
+        * `draft` - Draft
+        * `posted` - Posted
+    TrialBalance:
+      type: object
+      properties:
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrialBalanceRow'
+        total_debit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        total_credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        total_balance_debit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        total_balance_credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        is_balanced:
+          type: boolean
+      required:
+      - is_balanced
+      - rows
+      - total_balance_credit
+      - total_balance_debit
+      - total_credit
+      - total_debit
+    TrialBalanceRow:
+      type: object
+      properties:
+        account_id:
+          type: integer
+        code:
+          type: string
+        name:
+          type: string
+        name_en:
+          type: string
+        debit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        balance_debit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        balance_credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+      required:
+      - account_id
+      - balance_credit
+      - balance_debit
+      - code
+      - credit
+      - debit
+      - name
+      - name_en
+    TypeEnum:
+      enum:
+      - asset
+      - liability
+      - equity
+      - revenue
+      - expense
+      type: string
+      description: |-
+        * `asset` - Assets
+        * `liability` - Liabilities
+        * `equity` - Equity
+        * `revenue` - Revenue
+        * `expense` - Expenses
   securitySchemes:
     cookieAuth:
       type: apiKey
