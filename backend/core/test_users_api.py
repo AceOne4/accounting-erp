@@ -141,3 +141,12 @@ def test_user_changes_own_password(db, company, make_user, client_for):
     user.refresh_from_db()
     assert user.check_password("New-pass-98765")
     assert client.get("/api/v1/me/").status_code == 200  # still signed in
+
+
+def test_signed_out_requests_get_401_and_forbidden_ones_403(db, company, make_user, client_for):
+    from rest_framework.test import APIClient
+
+    assert APIClient().get("/api/v1/me/").status_code == 401
+    assert APIClient().get("/api/v1/journal-entries/").status_code == 401
+    reviewer = make_user("rv", company, "reviewer")
+    assert client_for(reviewer, company).get("/api/v1/users/").status_code == 403  # signed in, not allowed

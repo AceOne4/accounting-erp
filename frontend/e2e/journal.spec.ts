@@ -29,7 +29,10 @@ test('create, balance-check, save, post and lock a journal entry', async ({ page
   await page.screenshot({ path: `${SHOTS}/02-list-ar.png` })
 
   await page.getByRole('link', { name: /قيد جديد|new entry/i }).click()
-  await page.getByRole('textbox', { name: /البيان|description/i }).fill('E2E cash sale')
+  const description = page.getByRole('textbox', { name: /البيان|description/i })
+  await expect(page.locator('tbody select').first()).toBeVisible() // the account list has loaded
+  await description.fill('E2E cash sale')
+  await expect(description).toHaveValue('E2E cash sale')
 
   const rows = page.locator('tbody tr')
   const first = rows.nth(0)

@@ -122,7 +122,7 @@ comparison against the ledger; item card; a single-user lock per company (15 min
 A receipt or transfer is locked once its entry is posted or its stock has been used.
 
 **Sign-in:** `GET /api/v1/auth/csrf/`, then `POST /api/v1/auth/login/` with the token in
-`X-CSRFToken`; `POST /api/v1/auth/logout/`. Logged-out requests answer 403 (session auth).
+`X-CSRFToken`; `POST /api/v1/auth/logout/`. Signed-out requests answer 401; signed in but not allowed answers 403.
 
 **Journal links:** entries made by a stock receipt or a cash count carry a `source`. Receipt
 entries are edited only from the receipt; cash-count entries cannot be edited (post or delete
