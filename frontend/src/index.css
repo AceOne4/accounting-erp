@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* Layout uses logical properties (ms-*, me-*, ps-*, pe-*, text-start) so the same
+   markup works in right-to-left Arabic and left-to-right English. */
+html {
+  font-family: system-ui, "Segoe UI", Tahoma, sans-serif;
+}

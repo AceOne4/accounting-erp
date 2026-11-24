@@ -1,0 +1,5 @@
+{
+  "app": { "title": "Accounting ERP" },
+  "health": { "label": "API status", "ok": "Connected", "down": "Not reachable" },
+  "language": { "ar": "العربية", "en": "English" }
+}
