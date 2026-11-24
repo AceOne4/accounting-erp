@@ -1,3 +1,4 @@
+from core.permissions import capabilities_for
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers
 from rest_framework.decorators import api_view, permission_classes
@@ -12,6 +13,7 @@ CompanyRoleSerializer = inline_serializer(
         "id": serializers.IntegerField(),
         "name": serializers.CharField(),
         "role": serializers.CharField(),
+        "capabilities": serializers.ListField(child=serializers.CharField()),
     },
     many=True,
 )
@@ -58,7 +60,13 @@ def _me_payload(user):
     return {
         "username": user.get_username(),
         "companies": [
-            {"id": m.company_id, "name": m.company.name, "role": m.role} for m in memberships
+            {
+                "id": m.company_id,
+                "name": m.company.name,
+                "role": m.role,
+                "capabilities": sorted(capabilities_for(m.role)),
+            }
+            for m in memberships
         ],
     }
 

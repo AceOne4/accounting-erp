@@ -1,5 +1,37 @@
 {
   "app": { "title": "Accounting ERP" },
-  "health": { "label": "API status", "ok": "Connected", "down": "Not reachable" },
-  "language": { "ar": "العربية", "en": "English" }
+  "language": { "ar": "العربية", "en": "English" },
+  "login": {
+    "username": "Username", "password": "Password", "submit": "Sign in",
+    "wrong": "Wrong username or password", "tooMany": "Too many attempts. Wait a minute and try again.",
+    "down": "The server is not reachable."
+  },
+  "nav": { "journal": "Journal entries", "treasury": "Treasury", "inventory": "Inventory", "reports": "Reports" },
+  "shell": { "company": "Company", "logout": "Sign out", "noCompany": "Your account is not a member of any company yet. Ask an administrator." },
+  "role": {
+    "accountant": "Accountant", "reviewer": "Reviewer",
+    "chief_accountant": "Chief accountant", "system_admin": "System admin"
+  },
+  "common": {
+    "loadFailed": "Could not load or save. Check the connection and try again.",
+    "count": "{{count}} records", "previous": "Previous", "next": "Next", "back": "Back",
+    "comingSoon": "This screen has not been built yet."
+  },
+  "journal": {
+    "title": "Journal entries", "new": "New entry", "entry": "Entry", "search": "Search description…",
+    "status": "Status", "allStatuses": "All statuses", "draft": "Draft", "posted": "Posted",
+    "onlyIncomplete": "Only incomplete", "incomplete": "Incomplete", "empty": "No entries.",
+    "date": "Date", "description": "Description", "account": "Account", "partner": "Customer / Supplier",
+    "choosePartner": "Choose…", "debit": "Debit", "credit": "Credit", "memo": "Notes",
+    "addLine": "Add line", "removeLine": "Remove line",
+    "balanced": "Balanced", "unbalanced": "Off by {{diff}}",
+    "missingPartner": "{{count}} line(s) need a customer/supplier before this entry can be posted.",
+    "saveDraft": "Save draft", "save": "Save changes", "saved": "Saved.", "saveFirst": "Save your changes first",
+    "post": "Post", "postedOk": "The entry was posted.", "postedLocked": "This entry is posted and can no longer be changed.",
+    "delete": "Delete", "confirmDelete": "Delete this draft entry?", "ai": "AI draft",
+    "problem": {
+      "account": "Choose an account", "amount": "Enter a debit or a credit amount",
+      "both": "A line is either debit or credit, not both", "decimals": "At most two decimal places"
+    }
+  }
 }

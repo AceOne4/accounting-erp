@@ -124,7 +124,23 @@ A receipt or transfer is locked once its entry is posted or its stock has been u
 **Sign-in:** `GET /api/v1/auth/csrf/`, then `POST /api/v1/auth/login/` with the token in
 `X-CSRFToken`; `POST /api/v1/auth/logout/`. Logged-out requests answer 403 (session auth).
 
-**Not ported yet:** the React screens, Arabic translations of API messages, user/role
+**Frontend (so far):** sign-in, company switcher, app shell (Arabic RTL / English LTR) and the
+journal screens: list with filters, and an entry form with live exact balance check, save draft,
+post and delete (shown only when the role allows). Treasury, inventory and report screens are next.
+
+**Run it locally:**
+```bash
+docker compose up -d db                      # PostgreSQL
+cd backend && python manage.py migrate
+python manage.py createsuperuser
+python manage.py seed_company "My Company" --user <username> --role chief_accountant
+python manage.py runserver                   # API on :8000
+cd ../frontend && npm run dev                # app on :5173 (proxies /api to :8000)
+```
+Browser tests (need the stack above running): `CHROME_PATH=/path/to/chrome npm run e2e`
+(`E2E_USER` / `E2E_PASS` = a chief accountant of the seeded company).
+
+**Not ported yet:** Arabic translations of API messages, user/role
 management screens, freight/free-goods accounts (504/505 exist in the chart but nothing posts
 to them yet), locking of linked entries against direct edits. Document numbers
 (RC-, TR-, CNT-) are unique but share one counter across companies.

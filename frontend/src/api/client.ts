@@ -3,6 +3,26 @@ function getCookie(name: string): string | null {
   return match ? decodeURIComponent(match.split('=').slice(1).join('=')) : null
 }
 
+let companyId: number | null = null
+/** The company every request acts in (sent as X-Company-Id). */
+export function setCompanyId(id: number | null) {
+  companyId = id
+}
+
+/** Flatten a DRF error body into readable lines. */
+export function errorMessages(body: unknown): string[] {
+  if (body == null) return []
+  if (typeof body === 'string') return [body]
+  if (Array.isArray(body)) return body.flatMap(errorMessages)
+  if (typeof body === 'object') {
+    return Object.entries(body as Record<string, unknown>).flatMap(([key, value]) => {
+      const inner = errorMessages(value)
+      return key === 'detail' || key === 'non_field_errors' ? inner : inner.map((m) => `${key}: ${m}`)
+    })
+  }
+  return [String(body)]
+}
+
 export class ApiError extends Error {
   status: number
   body: unknown
@@ -18,6 +38,7 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
   const method = (init.method ?? 'GET').toUpperCase()
   const headers = new Headers(init.headers)
   headers.set('Accept', 'application/json')
+  if (companyId !== null) headers.set('X-Company-Id', String(companyId))
   if (init.body && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json')
   if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) {
     const token = getCookie('csrftoken')
@@ -26,7 +47,14 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
 
   const res = await fetch(`/api/v1${path}`, { ...init, method, headers, credentials: 'same-origin' })
   const text = await res.text()
-  const body: unknown = text ? JSON.parse(text) : null
+  let body: unknown = null
+  if (text) {
+    try {
+      body = JSON.parse(text)
+    } catch {
+      body = text.slice(0, 200)
+    }
+  }
   if (!res.ok) throw new ApiError(res.status, body)
   return body as T
 }

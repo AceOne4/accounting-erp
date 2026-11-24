@@ -8,3 +8,7 @@ node_modules/
 frontend/dist/
 .pytest_cache/
 .DS_Store
+
+frontend/e2e/shots/
+frontend/test-results/
+frontend/playwright-report/

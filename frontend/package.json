@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
-    "api:types": "openapi-ts"
+    "api:types": "openapi-ts",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.9",

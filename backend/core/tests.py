@@ -30,7 +30,9 @@ def test_me_lists_only_own_companies():
     client = APIClient()
     client.force_login(user)
     data = client.get("/api/v1/me/").json()
-    assert data["companies"] == [{"id": mine.id, "name": "Nile Trading", "role": "reviewer"}]
+    [entry] = data["companies"]
+    assert (entry["id"], entry["name"], entry["role"]) == (mine.id, "Nile Trading", "reviewer")
+    assert "journal.post" in entry["capabilities"] and "journal.create" not in entry["capabilities"]
 
 
 def test_one_membership_per_user_and_company():
@@ -74,9 +76,9 @@ def test_login_me_logout_flow(csrf_client):
         "/api/v1/auth/login/", {"username": "sara", "password": "s3cret-pass"}, format="json"
     )
     assert res.status_code == 200
-    assert res.json()["companies"] == [
-        {"id": company.pk, "name": "Nile Trading", "role": "chief_accountant"}
-    ]
+    [entry] = res.json()["companies"]
+    assert (entry["id"], entry["name"], entry["role"]) == (company.pk, "Nile Trading", "chief_accountant")
+    assert "journal.post" in entry["capabilities"]
     assert csrf_client.get("/api/v1/me/").json()["username"] == "sara"
 
     # the login rotates the CSRF token; the client must re-read it

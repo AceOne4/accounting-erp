@@ -2047,7 +2047,12 @@ components:
           type: string
         role:
           type: string
+        capabilities:
+          type: array
+          items:
+            type: string
       required:
+      - capabilities
       - id
       - name
       - role

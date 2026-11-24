@@ -111,6 +111,7 @@ export type CompanyRole = {
     id: number;
     name: string;
     role: string;
+    capabilities: Array<string>;
 };
 
 export type Count = {

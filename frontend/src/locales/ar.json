@@ -1,5 +1,37 @@
 {
   "app": { "title": "نظام ERP للمحاسبين" },
-  "health": { "label": "حالة الخادم", "ok": "متصل", "down": "غير متاح" },
-  "language": { "ar": "العربية", "en": "English" }
+  "language": { "ar": "العربية", "en": "English" },
+  "login": {
+    "username": "اسم المستخدم", "password": "كلمة المرور", "submit": "تسجيل الدخول",
+    "wrong": "اسم المستخدم أو كلمة المرور غير صحيحة", "tooMany": "محاولات كثيرة. انتظر دقيقة ثم حاول مرة أخرى.",
+    "down": "تعذر الوصول إلى الخادم."
+  },
+  "nav": { "journal": "قيود اليومية", "treasury": "الخزينة", "inventory": "المخزون", "reports": "التقارير" },
+  "shell": { "company": "الشركة", "logout": "تسجيل الخروج", "noCompany": "حسابك ليس عضوًا في أي شركة بعد. اطلب من مدير النظام." },
+  "role": {
+    "accountant": "محاسب", "reviewer": "مراجع",
+    "chief_accountant": "رئيس الحسابات", "system_admin": "مدير النظام"
+  },
+  "common": {
+    "loadFailed": "تعذر التحميل أو الحفظ. تحقق من الاتصال وحاول مرة أخرى.",
+    "count": "{{count}} سجل", "previous": "السابق", "next": "التالي", "back": "رجوع",
+    "comingSoon": "هذه الشاشة لم تُنفذ بعد."
+  },
+  "journal": {
+    "title": "قيود اليومية", "new": "قيد جديد", "entry": "قيد", "search": "بحث في البيان…",
+    "status": "الحالة", "allStatuses": "كل الحالات", "draft": "مسودة", "posted": "مرحّل",
+    "onlyIncomplete": "الناقصة فقط", "incomplete": "ناقص", "empty": "لا توجد قيود.",
+    "date": "التاريخ", "description": "البيان", "account": "الحساب", "partner": "العميل / المورد",
+    "choosePartner": "اختر…", "debit": "مدين", "credit": "دائن", "memo": "ملاحظات",
+    "addLine": "إضافة سطر", "removeLine": "حذف السطر",
+    "balanced": "متوازن", "unbalanced": "الفرق {{diff}}",
+    "missingPartner": "{{count}} سطر يحتاج إلى عميل/مورد قبل ترحيل القيد.",
+    "saveDraft": "حفظ كمسودة", "save": "حفظ التعديلات", "saved": "تم الحفظ.", "saveFirst": "احفظ تعديلاتك أولًا",
+    "post": "ترحيل", "postedOk": "تم ترحيل القيد.", "postedLocked": "هذا القيد مرحّل ولا يمكن تعديله.",
+    "delete": "حذف", "confirmDelete": "حذف هذه المسودة؟", "ai": "مسودة ذكاء اصطناعي",
+    "problem": {
+      "account": "اختر حسابًا", "amount": "أدخل مبلغًا مدينًا أو دائنًا",
+      "both": "السطر إما مدين أو دائن وليس الاثنين", "decimals": "خانتان عشريتان كحد أقصى"
+    }
+  }
 }
