@@ -10,13 +10,24 @@ from .models import Membership
 
 R = Membership.Role
 
-VIEW = {"account.view", "partner.view", "journal.view", "reports.view"}
+VIEW = {
+    "account.view", "partner.view", "journal.view", "reports.view",
+    "treasury.view", "inventory.view",
+}
 
 ROLE_CAPABILITIES: dict[str, frozenset[str]] = {
     R.ACCOUNTANT: frozenset(
-        VIEW | {"journal.create", "journal.edit", "partner.edit"}
+        VIEW
+        | {
+            "journal.create", "journal.edit", "partner.edit",
+            "treasury.voucher", "treasury.count", "inventory.count",
+        }
     ),
-    R.REVIEWER: frozenset(VIEW | {"journal.edit", "journal.post"}),
+    R.REVIEWER: frozenset(VIEW
+        | {
+            "journal.edit", "journal.post",
+            "inventory.master", "inventory.receipt", "inventory.transfer",
+        }),
     R.CHIEF: frozenset(
         VIEW
         | {
@@ -27,6 +38,16 @@ ROLE_CAPABILITIES: dict[str, frozenset[str]] = {
             "account.manage",
             "partner.edit",
             "partner.delete",
+            "treasury.voucher",
+            "treasury.count",
+            "inventory.master",
+            "inventory.master_delete",
+            "inventory.receipt",
+            "inventory.receipt_delete",
+            "inventory.transfer",
+            "inventory.transfer_delete",
+            "inventory.count",
+            "inventory.override_lock",
         }
     ),
     R.ADMIN: frozenset(VIEW | {"users.manage"}),

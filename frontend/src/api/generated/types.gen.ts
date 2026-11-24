@@ -67,10 +67,84 @@ export type Balance = {
 
 export type BlankEnum = '';
 
+export type BoxFigures = {
+    account: number;
+    code: string;
+    name: string;
+    posted: string;
+    pending: string;
+    book: string;
+};
+
+export type CashCount = {
+    readonly id: number;
+    readonly box: number;
+    readonly box_code: string;
+    readonly count_date: string;
+    /**
+     * Counted cash
+     */
+    readonly counted_total: string;
+    readonly book_balance: string;
+    readonly difference: string;
+    readonly breakdown: unknown;
+    readonly notes: string;
+    readonly counted_by: string;
+    readonly entry: number;
+    readonly created_at: string;
+};
+
+export type CashCountCreateRequest = {
+    box: number;
+    count_date?: string;
+    /**
+     * Quantity per denomination, e.g. {'200': 3, '0.5': 4}
+     */
+    quantities: {
+        [key: string]: number;
+    };
+    notes?: string;
+    adjust?: boolean;
+};
+
 export type CompanyRole = {
     id: number;
     name: string;
     role: string;
+};
+
+export type Count = {
+    readonly id: number;
+    readonly number: string;
+    readonly warehouse: number;
+    readonly counted_at: string;
+    readonly counted_by: string;
+    readonly notes: string;
+    readonly lines: Array<CountLine>;
+};
+
+export type CountCreateRequest = {
+    warehouse: number;
+    notes?: string;
+    lines: Array<CountInputLineRequest>;
+};
+
+export type CountInputLineRequest = {
+    product: number;
+    counted_qty: string;
+};
+
+export type CountLine = {
+    readonly id: number;
+    readonly product: number;
+    readonly product_code: string;
+    book_qty: string;
+    counted_qty: string;
+    difference: string;
+};
+
+export type CsrfToken = {
+    csrfToken: string;
 };
 
 export type GeneralLedger = {
@@ -79,6 +153,25 @@ export type GeneralLedger = {
 
 export type Health = {
     status: string;
+};
+
+export type ItemCard = {
+    opening_qty: string;
+    opening_value: string;
+    rows: Array<ItemCardRow>;
+};
+
+export type ItemCardRow = {
+    date: string;
+    doc_type: string;
+    doc_id: number;
+    doc_number: string;
+    warehouse: number;
+    qty_in: string | null;
+    qty_out: string | null;
+    value: string;
+    balance_qty: string;
+    balance_value: string;
 };
 
 export type JournalEntry = {
@@ -129,13 +222,6 @@ export type JournalLineRequest = {
     memo?: string;
 };
 
-/**
- * * `customer` - Customer
- * * `supplier` - Supplier
- * * `both` - Customer and supplier
- */
-export type KindEnum = 'customer' | 'supplier' | 'both';
-
 export type Ledger = {
     account: AccountBrief;
     is_parent: boolean;
@@ -144,6 +230,12 @@ export type Ledger = {
     total_debit: string;
     total_credit: string;
     closing: Balance;
+};
+
+export type LedgerComparison = {
+    posted: string;
+    all: string;
+    difference: string;
 };
 
 export type LedgerRow = {
@@ -159,9 +251,34 @@ export type LedgerRow = {
     balance: Balance;
 };
 
+export type LockStatus = {
+    locked: boolean;
+    held_by_me: boolean;
+    holder: string | null;
+    minutes_left: number;
+};
+
+export type LoginRequest = {
+    username: string;
+};
+
 export type Me = {
     companies: Array<CompanyRole>;
     username: string;
+};
+
+export type PaginatedCashCountList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<CashCount>;
+};
+
+export type PaginatedCountList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<Count>;
 };
 
 export type PaginatedJournalEntryList = {
@@ -171,13 +288,34 @@ export type PaginatedJournalEntryList = {
     results: Array<JournalEntry>;
 };
 
+export type PaginatedProductList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<Product>;
+};
+
+export type PaginatedReceiptList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<Receipt>;
+};
+
+export type PaginatedTransferList = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<Transfer>;
+};
+
 export type Partner = {
     readonly id: number;
     name: string;
     /**
      * Type
      */
-    kind: KindEnum;
+    kind: PartnerKindEnum;
     tax_id?: string;
     phone?: string;
     /**
@@ -191,12 +329,19 @@ export type PartnerBrief = {
     name: string;
 };
 
+/**
+ * * `customer` - Customer
+ * * `supplier` - Supplier
+ * * `both` - Customer and supplier
+ */
+export type PartnerKindEnum = 'customer' | 'supplier' | 'both';
+
 export type PartnerRequest = {
     name: string;
     /**
      * Type
      */
-    kind: KindEnum;
+    kind: PartnerKindEnum;
     tax_id?: string;
     phone?: string;
     /**
@@ -219,6 +364,104 @@ export type PartnerStatement = {
     draft_net: Balance;
     has_draft: boolean;
     incomplete_entries: number;
+};
+
+export type Product = {
+    readonly id: number;
+    code: string;
+    name: string;
+    /**
+     * Name (English)
+     */
+    name_en?: string;
+    description?: string;
+    unit: number;
+    /**
+     * VAT exempt
+     */
+    tax_exempt?: boolean;
+    /**
+     * VAT rate %
+     *
+     * Leave blank to use the default rate
+     */
+    tax_rate?: string | null;
+    /**
+     * Active
+     */
+    is_active?: boolean;
+};
+
+export type ProductRequest = {
+    code: string;
+    name: string;
+    /**
+     * Name (English)
+     */
+    name_en?: string;
+    description?: string;
+    unit: number;
+    /**
+     * VAT exempt
+     */
+    tax_exempt?: boolean;
+    /**
+     * VAT rate %
+     *
+     * Leave blank to use the default rate
+     */
+    tax_rate?: string | null;
+    /**
+     * Active
+     */
+    is_active?: boolean;
+};
+
+export type Receipt = {
+    readonly id: number;
+    readonly number: string;
+    date?: string;
+    warehouse: number;
+    supplier: number;
+    supplier_invoice?: string;
+    notes?: string;
+    lines: Array<ReceiptLine>;
+    readonly total_cost: string;
+    readonly journal_entry: number;
+    readonly journal_entry_status: string;
+    readonly locked_reason: string;
+    readonly created_by: string;
+    readonly created_at: string;
+};
+
+export type ReceiptLine = {
+    readonly id: number;
+    product: number;
+    quantity: string;
+    unit_cost: string;
+    readonly line_total: string;
+};
+
+export type ReceiptLineRequest = {
+    product: number;
+    quantity: string;
+    unit_cost: string;
+};
+
+export type ReceiptRequest = {
+    date?: string;
+    warehouse: number;
+    supplier: number;
+    supplier_invoice?: string;
+    notes?: string;
+    lines: Array<ReceiptLineRequest>;
+};
+
+export type RecentEntry = {
+    id: number;
+    date: string;
+    description: string;
+    status: string;
 };
 
 /**
@@ -253,6 +496,63 @@ export type StatementRow = {
  */
 export type StatusEnum = 'draft' | 'posted';
 
+export type StockLevelRow = {
+    product: number;
+    product_code: string;
+    product_name: string;
+    unit: string;
+    warehouse: number;
+    warehouse_code: string;
+    qty: string;
+    value: string;
+    avg_cost: string;
+};
+
+export type StockLevels = {
+    rows: Array<StockLevelRow>;
+    total_value: string;
+    stock_total: string;
+    ledger: LedgerComparison | null;
+};
+
+export type Transfer = {
+    readonly id: number;
+    readonly number: string;
+    date?: string;
+    from_warehouse: number;
+    to_warehouse: number;
+    notes?: string;
+    lines: Array<TransferLine>;
+    readonly locked_reason: string;
+    readonly created_by: string;
+    readonly created_at: string;
+};
+
+export type TransferLine = {
+    readonly id: number;
+    product: number;
+    quantity: string;
+};
+
+export type TransferLineRequest = {
+    product: number;
+    quantity: string;
+};
+
+export type TransferRequest = {
+    date?: string;
+    from_warehouse: number;
+    to_warehouse: number;
+    notes?: string;
+    lines: Array<TransferLineRequest>;
+};
+
+export type TreasuryOverview = {
+    boxes: Array<BoxFigures>;
+    recent_entries: Array<RecentEntry>;
+    denominations: Array<string>;
+};
+
 export type TrialBalance = {
     rows: Array<TrialBalanceRow>;
     total_debit: string;
@@ -282,6 +582,77 @@ export type TrialBalanceRow = {
  */
 export type TypeEnum = 'asset' | 'liability' | 'equity' | 'revenue' | 'expense';
 
+export type Unit = {
+    readonly id: number;
+    name: string;
+    /**
+     * Name (English)
+     */
+    name_en?: string;
+};
+
+export type UnitRequest = {
+    name: string;
+    /**
+     * Name (English)
+     */
+    name_en?: string;
+};
+
+/**
+ * * `collect` - collect
+ * * `refund` - refund
+ * * `deposit` - deposit
+ * * `fund` - fund
+ * * `expense` - expense
+ * * `supplier` - supplier
+ */
+export type VoucherKindEnum = 'collect' | 'refund' | 'deposit' | 'fund' | 'expense' | 'supplier';
+
+export type VoucherRequest = {
+    kind: VoucherKindEnum;
+    date: string;
+    amount: string;
+    partner?: number | null;
+    expense_account?: number | null;
+    reference?: string;
+    note?: string;
+    post_now?: boolean;
+};
+
+export type VoucherResult = {
+    entry_id: number;
+    posted: boolean;
+    post_error: string;
+};
+
+export type Warehouse = {
+    readonly id: number;
+    code: string;
+    name: string;
+    /**
+     * Name (English)
+     */
+    name_en?: string;
+    /**
+     * Active
+     */
+    is_active?: boolean;
+};
+
+export type WarehouseRequest = {
+    code: string;
+    name: string;
+    /**
+     * Name (English)
+     */
+    name_en?: string;
+    /**
+     * Active
+     */
+    is_active?: boolean;
+};
+
 export type AccountWritable = {
     code: string;
     /**
@@ -306,6 +677,16 @@ export type AccountWritable = {
     requires_partner?: boolean;
 };
 
+export type CountWritable = {
+    [key: string]: unknown;
+};
+
+export type CountLineWritable = {
+    book_qty: string;
+    counted_qty: string;
+    difference: string;
+};
+
 export type JournalEntryWritable = {
     date: string;
     description: string;
@@ -323,6 +704,25 @@ export type JournalLineWritable = {
     memo?: string;
 };
 
+export type LoginRequestWritable = {
+    username: string;
+    password: string;
+};
+
+export type PaginatedCashCountListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<unknown>;
+};
+
+export type PaginatedCountListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<CountWritable>;
+};
+
 export type PaginatedJournalEntryListWritable = {
     count: number;
     next?: string | null;
@@ -330,14 +730,109 @@ export type PaginatedJournalEntryListWritable = {
     results: Array<JournalEntryWritable>;
 };
 
+export type PaginatedProductListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<ProductWritable>;
+};
+
+export type PaginatedReceiptListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<ReceiptWritable>;
+};
+
+export type PaginatedTransferListWritable = {
+    count: number;
+    next?: string | null;
+    previous?: string | null;
+    results: Array<TransferWritable>;
+};
+
 export type PartnerWritable = {
     name: string;
     /**
      * Type
      */
-    kind: KindEnum;
+    kind: PartnerKindEnum;
     tax_id?: string;
     phone?: string;
+    /**
+     * Active
+     */
+    is_active?: boolean;
+};
+
+export type ProductWritable = {
+    code: string;
+    name: string;
+    /**
+     * Name (English)
+     */
+    name_en?: string;
+    description?: string;
+    unit: number;
+    /**
+     * VAT exempt
+     */
+    tax_exempt?: boolean;
+    /**
+     * VAT rate %
+     *
+     * Leave blank to use the default rate
+     */
+    tax_rate?: string | null;
+    /**
+     * Active
+     */
+    is_active?: boolean;
+};
+
+export type ReceiptWritable = {
+    date?: string;
+    warehouse: number;
+    supplier: number;
+    supplier_invoice?: string;
+    notes?: string;
+    lines: Array<ReceiptLineWritable>;
+};
+
+export type ReceiptLineWritable = {
+    product: number;
+    quantity: string;
+    unit_cost: string;
+};
+
+export type TransferWritable = {
+    date?: string;
+    from_warehouse: number;
+    to_warehouse: number;
+    notes?: string;
+    lines: Array<TransferLineWritable>;
+};
+
+export type TransferLineWritable = {
+    product: number;
+    quantity: string;
+};
+
+export type UnitWritable = {
+    name: string;
+    /**
+     * Name (English)
+     */
+    name_en?: string;
+};
+
+export type WarehouseWritable = {
+    code: string;
+    name: string;
+    /**
+     * Name (English)
+     */
+    name_en?: string;
     /**
      * Active
      */
@@ -430,6 +925,66 @@ export type V1AccountsUpdateResponses = {
 
 export type V1AccountsUpdateResponse = V1AccountsUpdateResponses[keyof V1AccountsUpdateResponses];
 
+export type V1AuthCsrfRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/csrf/';
+};
+
+export type V1AuthCsrfRetrieveResponses = {
+    200: CsrfToken;
+};
+
+export type V1AuthCsrfRetrieveResponse = V1AuthCsrfRetrieveResponses[keyof V1AuthCsrfRetrieveResponses];
+
+export type V1AuthLoginCreateData = {
+    body: LoginRequestWritable;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/login/';
+};
+
+export type V1AuthLoginCreateResponses = {
+    200: Me;
+};
+
+export type V1AuthLoginCreateResponse = V1AuthLoginCreateResponses[keyof V1AuthLoginCreateResponses];
+
+export type V1AuthLogoutCreateData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/logout/';
+};
+
+export type V1AuthLogoutCreateResponses = {
+    /**
+     * No response body
+     */
+    204: void;
+};
+
+export type V1AuthLogoutCreateResponse = V1AuthLogoutCreateResponses[keyof V1AuthLogoutCreateResponses];
+
 export type V1HealthRetrieveData = {
     body?: never;
     path?: never;
@@ -442,6 +997,678 @@ export type V1HealthRetrieveResponses = {
 };
 
 export type V1HealthRetrieveResponse = V1HealthRetrieveResponses[keyof V1HealthRetrieveResponses];
+
+export type V1InventoryCountsListData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: {
+        /**
+         * رقم الصفحة ضمن النتائج المقسمة.
+         */
+        page?: number;
+    };
+    url: '/api/v1/inventory/counts/';
+};
+
+export type V1InventoryCountsListResponses = {
+    200: PaginatedCountList;
+};
+
+export type V1InventoryCountsListResponse = V1InventoryCountsListResponses[keyof V1InventoryCountsListResponses];
+
+export type V1InventoryCountsCreateData = {
+    body: CountCreateRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/inventory/counts/';
+};
+
+export type V1InventoryCountsCreateResponses = {
+    201: Count;
+};
+
+export type V1InventoryCountsCreateResponse = V1InventoryCountsCreateResponses[keyof V1InventoryCountsCreateResponses];
+
+export type V1InventoryCountsRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا stock count.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/inventory/counts/{id}/';
+};
+
+export type V1InventoryCountsRetrieveResponses = {
+    200: Count;
+};
+
+export type V1InventoryCountsRetrieveResponse = V1InventoryCountsRetrieveResponses[keyof V1InventoryCountsRetrieveResponses];
+
+export type V1InventoryLockRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/inventory/lock/';
+};
+
+export type V1InventoryLockRetrieveResponses = {
+    200: LockStatus;
+};
+
+export type V1InventoryLockRetrieveResponse = V1InventoryLockRetrieveResponses[keyof V1InventoryLockRetrieveResponses];
+
+export type V1InventoryLockForceReleaseCreateData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/inventory/lock/force-release/';
+};
+
+export type V1InventoryLockForceReleaseCreateResponses = {
+    200: LockStatus;
+};
+
+export type V1InventoryLockForceReleaseCreateResponse = V1InventoryLockForceReleaseCreateResponses[keyof V1InventoryLockForceReleaseCreateResponses];
+
+export type V1InventoryLockReleaseCreateData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/inventory/lock/release/';
+};
+
+export type V1InventoryLockReleaseCreateResponses = {
+    200: LockStatus;
+};
+
+export type V1InventoryLockReleaseCreateResponse = V1InventoryLockReleaseCreateResponses[keyof V1InventoryLockReleaseCreateResponses];
+
+export type V1InventoryProductsListData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: {
+        /**
+         * رقم الصفحة ضمن النتائج المقسمة.
+         */
+        page?: number;
+    };
+    url: '/api/v1/inventory/products/';
+};
+
+export type V1InventoryProductsListResponses = {
+    200: PaginatedProductList;
+};
+
+export type V1InventoryProductsListResponse = V1InventoryProductsListResponses[keyof V1InventoryProductsListResponses];
+
+export type V1InventoryProductsCreateData = {
+    body: ProductRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/inventory/products/';
+};
+
+export type V1InventoryProductsCreateResponses = {
+    201: Product;
+};
+
+export type V1InventoryProductsCreateResponse = V1InventoryProductsCreateResponses[keyof V1InventoryProductsCreateResponses];
+
+export type V1InventoryProductsDestroyData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا product.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/inventory/products/{id}/';
+};
+
+export type V1InventoryProductsDestroyResponses = {
+    /**
+     * No response body
+     */
+    204: void;
+};
+
+export type V1InventoryProductsDestroyResponse = V1InventoryProductsDestroyResponses[keyof V1InventoryProductsDestroyResponses];
+
+export type V1InventoryProductsRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا product.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/inventory/products/{id}/';
+};
+
+export type V1InventoryProductsRetrieveResponses = {
+    200: Product;
+};
+
+export type V1InventoryProductsRetrieveResponse = V1InventoryProductsRetrieveResponses[keyof V1InventoryProductsRetrieveResponses];
+
+export type V1InventoryProductsUpdateData = {
+    body: ProductRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا product.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/inventory/products/{id}/';
+};
+
+export type V1InventoryProductsUpdateResponses = {
+    200: Product;
+};
+
+export type V1InventoryProductsUpdateResponse = V1InventoryProductsUpdateResponses[keyof V1InventoryProductsUpdateResponses];
+
+export type V1InventoryReceiptsListData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: {
+        /**
+         * رقم الصفحة ضمن النتائج المقسمة.
+         */
+        page?: number;
+    };
+    url: '/api/v1/inventory/receipts/';
+};
+
+export type V1InventoryReceiptsListResponses = {
+    200: PaginatedReceiptList;
+};
+
+export type V1InventoryReceiptsListResponse = V1InventoryReceiptsListResponses[keyof V1InventoryReceiptsListResponses];
+
+export type V1InventoryReceiptsCreateData = {
+    body: ReceiptRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/inventory/receipts/';
+};
+
+export type V1InventoryReceiptsCreateResponses = {
+    201: Receipt;
+};
+
+export type V1InventoryReceiptsCreateResponse = V1InventoryReceiptsCreateResponses[keyof V1InventoryReceiptsCreateResponses];
+
+export type V1InventoryReceiptsDestroyData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا stock receipt.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/inventory/receipts/{id}/';
+};
+
+export type V1InventoryReceiptsDestroyResponses = {
+    /**
+     * No response body
+     */
+    204: void;
+};
+
+export type V1InventoryReceiptsDestroyResponse = V1InventoryReceiptsDestroyResponses[keyof V1InventoryReceiptsDestroyResponses];
+
+export type V1InventoryReceiptsRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا stock receipt.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/inventory/receipts/{id}/';
+};
+
+export type V1InventoryReceiptsRetrieveResponses = {
+    200: Receipt;
+};
+
+export type V1InventoryReceiptsRetrieveResponse = V1InventoryReceiptsRetrieveResponses[keyof V1InventoryReceiptsRetrieveResponses];
+
+export type V1InventoryReceiptsUpdateData = {
+    body: ReceiptRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا stock receipt.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/inventory/receipts/{id}/';
+};
+
+export type V1InventoryReceiptsUpdateResponses = {
+    200: Receipt;
+};
+
+export type V1InventoryReceiptsUpdateResponse = V1InventoryReceiptsUpdateResponses[keyof V1InventoryReceiptsUpdateResponses];
+
+export type V1InventoryReportsItemCardRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query: {
+        date_from?: string;
+        date_to?: string;
+        product: number;
+        warehouse?: number;
+    };
+    url: '/api/v1/inventory/reports/item-card/';
+};
+
+export type V1InventoryReportsItemCardRetrieveResponses = {
+    200: ItemCard;
+};
+
+export type V1InventoryReportsItemCardRetrieveResponse = V1InventoryReportsItemCardRetrieveResponses[keyof V1InventoryReportsItemCardRetrieveResponses];
+
+export type V1InventoryReportsStockLevelsRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: {
+        q?: string;
+        warehouse?: number;
+    };
+    url: '/api/v1/inventory/reports/stock-levels/';
+};
+
+export type V1InventoryReportsStockLevelsRetrieveResponses = {
+    200: StockLevels;
+};
+
+export type V1InventoryReportsStockLevelsRetrieveResponse = V1InventoryReportsStockLevelsRetrieveResponses[keyof V1InventoryReportsStockLevelsRetrieveResponses];
+
+export type V1InventoryTransfersListData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: {
+        /**
+         * رقم الصفحة ضمن النتائج المقسمة.
+         */
+        page?: number;
+    };
+    url: '/api/v1/inventory/transfers/';
+};
+
+export type V1InventoryTransfersListResponses = {
+    200: PaginatedTransferList;
+};
+
+export type V1InventoryTransfersListResponse = V1InventoryTransfersListResponses[keyof V1InventoryTransfersListResponses];
+
+export type V1InventoryTransfersCreateData = {
+    body: TransferRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/inventory/transfers/';
+};
+
+export type V1InventoryTransfersCreateResponses = {
+    201: Transfer;
+};
+
+export type V1InventoryTransfersCreateResponse = V1InventoryTransfersCreateResponses[keyof V1InventoryTransfersCreateResponses];
+
+export type V1InventoryTransfersDestroyData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا stock transfer.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/inventory/transfers/{id}/';
+};
+
+export type V1InventoryTransfersDestroyResponses = {
+    /**
+     * No response body
+     */
+    204: void;
+};
+
+export type V1InventoryTransfersDestroyResponse = V1InventoryTransfersDestroyResponses[keyof V1InventoryTransfersDestroyResponses];
+
+export type V1InventoryTransfersRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا stock transfer.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/inventory/transfers/{id}/';
+};
+
+export type V1InventoryTransfersRetrieveResponses = {
+    200: Transfer;
+};
+
+export type V1InventoryTransfersRetrieveResponse = V1InventoryTransfersRetrieveResponses[keyof V1InventoryTransfersRetrieveResponses];
+
+export type V1InventoryUnitsListData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/inventory/units/';
+};
+
+export type V1InventoryUnitsListResponses = {
+    200: Array<Unit>;
+};
+
+export type V1InventoryUnitsListResponse = V1InventoryUnitsListResponses[keyof V1InventoryUnitsListResponses];
+
+export type V1InventoryUnitsCreateData = {
+    body: UnitRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/inventory/units/';
+};
+
+export type V1InventoryUnitsCreateResponses = {
+    201: Unit;
+};
+
+export type V1InventoryUnitsCreateResponse = V1InventoryUnitsCreateResponses[keyof V1InventoryUnitsCreateResponses];
+
+export type V1InventoryUnitsRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا unit.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/inventory/units/{id}/';
+};
+
+export type V1InventoryUnitsRetrieveResponses = {
+    200: Unit;
+};
+
+export type V1InventoryUnitsRetrieveResponse = V1InventoryUnitsRetrieveResponses[keyof V1InventoryUnitsRetrieveResponses];
+
+export type V1InventoryUnitsUpdateData = {
+    body: UnitRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا unit.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/inventory/units/{id}/';
+};
+
+export type V1InventoryUnitsUpdateResponses = {
+    200: Unit;
+};
+
+export type V1InventoryUnitsUpdateResponse = V1InventoryUnitsUpdateResponses[keyof V1InventoryUnitsUpdateResponses];
+
+export type V1InventoryWarehousesListData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/inventory/warehouses/';
+};
+
+export type V1InventoryWarehousesListResponses = {
+    200: Array<Warehouse>;
+};
+
+export type V1InventoryWarehousesListResponse = V1InventoryWarehousesListResponses[keyof V1InventoryWarehousesListResponses];
+
+export type V1InventoryWarehousesCreateData = {
+    body: WarehouseRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/inventory/warehouses/';
+};
+
+export type V1InventoryWarehousesCreateResponses = {
+    201: Warehouse;
+};
+
+export type V1InventoryWarehousesCreateResponse = V1InventoryWarehousesCreateResponses[keyof V1InventoryWarehousesCreateResponses];
+
+export type V1InventoryWarehousesRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا warehouse.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/inventory/warehouses/{id}/';
+};
+
+export type V1InventoryWarehousesRetrieveResponses = {
+    200: Warehouse;
+};
+
+export type V1InventoryWarehousesRetrieveResponse = V1InventoryWarehousesRetrieveResponses[keyof V1InventoryWarehousesRetrieveResponses];
+
+export type V1InventoryWarehousesUpdateData = {
+    body: WarehouseRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا warehouse.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/inventory/warehouses/{id}/';
+};
+
+export type V1InventoryWarehousesUpdateResponses = {
+    200: Warehouse;
+};
+
+export type V1InventoryWarehousesUpdateResponse = V1InventoryWarehousesUpdateResponses[keyof V1InventoryWarehousesUpdateResponses];
 
 export type V1JournalEntriesListData = {
     body?: never;
@@ -798,3 +2025,108 @@ export type V1ReportsTrialBalanceRetrieveResponses = {
 };
 
 export type V1ReportsTrialBalanceRetrieveResponse = V1ReportsTrialBalanceRetrieveResponses[keyof V1ReportsTrialBalanceRetrieveResponses];
+
+export type V1TreasuryCashCountsListData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: {
+        /**
+         * رقم الصفحة ضمن النتائج المقسمة.
+         */
+        page?: number;
+    };
+    url: '/api/v1/treasury/cash-counts/';
+};
+
+export type V1TreasuryCashCountsListResponses = {
+    200: PaginatedCashCountList;
+};
+
+export type V1TreasuryCashCountsListResponse = V1TreasuryCashCountsListResponses[keyof V1TreasuryCashCountsListResponses];
+
+export type V1TreasuryCashCountsCreateData = {
+    body: CashCountCreateRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/treasury/cash-counts/';
+};
+
+export type V1TreasuryCashCountsCreateResponses = {
+    201: CashCount;
+};
+
+export type V1TreasuryCashCountsCreateResponse = V1TreasuryCashCountsCreateResponses[keyof V1TreasuryCashCountsCreateResponses];
+
+export type V1TreasuryCashCountsRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا Cash count.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/treasury/cash-counts/{id}/';
+};
+
+export type V1TreasuryCashCountsRetrieveResponses = {
+    200: CashCount;
+};
+
+export type V1TreasuryCashCountsRetrieveResponse = V1TreasuryCashCountsRetrieveResponses[keyof V1TreasuryCashCountsRetrieveResponses];
+
+export type V1TreasuryOverviewRetrieveData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/treasury/overview/';
+};
+
+export type V1TreasuryOverviewRetrieveResponses = {
+    200: TreasuryOverview;
+};
+
+export type V1TreasuryOverviewRetrieveResponse = V1TreasuryOverviewRetrieveResponses[keyof V1TreasuryOverviewRetrieveResponses];
+
+export type V1TreasuryVouchersCreateData = {
+    body: VoucherRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/treasury/vouchers/';
+};
+
+export type V1TreasuryVouchersCreateResponses = {
+    201: VoucherResult;
+};
+
+export type V1TreasuryVouchersCreateResponse = V1TreasuryVouchersCreateResponses[keyof V1TreasuryVouchersCreateResponses];

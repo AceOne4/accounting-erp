@@ -110,6 +110,22 @@ New company with the default chart of accounts:
 python manage.py seed_company "My Company" --user yourusername --role chief_accountant
 ```
 
-**Not ported yet:** treasury and cash counts (phase B), inventory (phase C), the React
-screens, Arabic translations of API messages, user/role management screens.
-Run `pytest` for the backend suite (57 tests).
+**Treasury (phase B):** vouchers (collect, refund, deposit, fund the expenses box, pay an
+expense, pay a supplier) are journal entries built by `backend/treasury/services.py`; cash
+counts by denomination with book-vs-counted difference and an optional draft shortage/overage
+entry (account 510). Box figures show posted, pending (draft) and book balance.
+
+**Inventory (phase C):** units, warehouses, products; goods receipts (each creates FIFO layers,
+item-card movements and a draft entry DR 105 Inventory / CR 210 Goods received not invoiced);
+transfers that move the consumed layers with their cost; stock counts; stock levels with a
+comparison against the ledger; item card; a single-user lock per company (15 minutes idle).
+A receipt or transfer is locked once its entry is posted or its stock has been used.
+
+**Sign-in:** `GET /api/v1/auth/csrf/`, then `POST /api/v1/auth/login/` with the token in
+`X-CSRFToken`; `POST /api/v1/auth/logout/`. Logged-out requests answer 403 (session auth).
+
+**Not ported yet:** the React screens, Arabic translations of API messages, user/role
+management screens, freight/free-goods accounts (504/505 exist in the chart but nothing posts
+to them yet), locking of linked entries against direct edits. Document numbers
+(RC-, TR-, CNT-) are unique but share one counter across companies.
+Run `pytest` for the backend suite (128 tests, also run against PostgreSQL).

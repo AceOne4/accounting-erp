@@ -135,6 +135,79 @@ paths:
               schema:
                 $ref: '#/components/schemas/Account'
           description: ''
+  /api/v1/auth/csrf/:
+    get:
+      operationId: v1_auth_csrf_retrieve
+      description: 'GET: sets the csrftoken cookie. The client sends it back as X-CSRFToken.'
+      tags:
+      - v1
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CsrfToken'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/auth/login/:
+    post:
+      operationId: v1_auth_login_create
+      description: 'POST: start a session. Rate limited; wrong credentials give one
+        generic error.'
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Me'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/auth/logout/:
+    post:
+      operationId: v1_auth_logout_create
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
   /api/v1/health/:
     get:
       operationId: v1_health_retrieve
@@ -146,6 +219,930 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Health'
+          description: ''
+  /api/v1/inventory/counts/:
+    get:
+      operationId: v1_inventory_counts_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: رقم الصفحة ضمن النتائج المقسمة.
+        schema:
+          type: integer
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCountList'
+          description: ''
+    post:
+      operationId: v1_inventory_counts_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CountCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CountCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CountCreateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Count'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/inventory/counts/{id}/:
+    get:
+      operationId: v1_inventory_counts_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا stock count.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Count'
+          description: ''
+  /api/v1/inventory/lock/:
+    get:
+      operationId: v1_inventory_lock_retrieve
+      description: 'GET: who holds the inventory lock. Does not take it.'
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LockStatus'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/inventory/lock/force-release/:
+    post:
+      operationId: v1_inventory_lock_force_release_create
+      description: 'POST: free the lock whoever holds it.'
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LockStatus'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/inventory/lock/release/:
+    post:
+      operationId: v1_inventory_lock_release_create
+      description: 'POST: leave the inventory module and free the lock (your own lock
+        only).'
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LockStatus'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/inventory/products/:
+    get:
+      operationId: v1_inventory_products_list
+      description: List before the create mixin so the new record gets the request's
+        company.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: رقم الصفحة ضمن النتائج المقسمة.
+        schema:
+          type: integer
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductList'
+          description: ''
+    post:
+      operationId: v1_inventory_products_create
+      description: List before the create mixin so the new record gets the request's
+        company.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/inventory/products/{id}/:
+    get:
+      operationId: v1_inventory_products_retrieve
+      description: List before the create mixin so the new record gets the request's
+        company.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا product.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    put:
+      operationId: v1_inventory_products_update
+      description: List before the create mixin so the new record gets the request's
+        company.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا product.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    delete:
+      operationId: v1_inventory_products_destroy
+      description: List before the create mixin so the new record gets the request's
+        company.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا product.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/inventory/receipts/:
+    get:
+      operationId: v1_inventory_receipts_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: رقم الصفحة ضمن النتائج المقسمة.
+        schema:
+          type: integer
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReceiptList'
+          description: ''
+    post:
+      operationId: v1_inventory_receipts_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiptRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReceiptRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReceiptRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Receipt'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/inventory/receipts/{id}/:
+    get:
+      operationId: v1_inventory_receipts_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا stock receipt.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Receipt'
+          description: ''
+    put:
+      operationId: v1_inventory_receipts_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا stock receipt.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiptRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReceiptRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReceiptRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Receipt'
+          description: ''
+    delete:
+      operationId: v1_inventory_receipts_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا stock receipt.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/inventory/reports/item-card/:
+    get:
+      operationId: v1_inventory_reports_item_card_retrieve
+      description: |-
+        Only one user per company works in the inventory module at a time (15 minutes
+        idle frees it). Users with inventory.override_lock are never turned away.
+      parameters:
+      - in: query
+        name: date_from
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: date_to
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: product
+        schema:
+          type: integer
+        required: true
+      - in: query
+        name: warehouse
+        schema:
+          type: integer
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemCard'
+          description: ''
+  /api/v1/inventory/reports/stock-levels/:
+    get:
+      operationId: v1_inventory_reports_stock_levels_retrieve
+      description: |-
+        Only one user per company works in the inventory module at a time (15 minutes
+        idle frees it). Users with inventory.override_lock are never turned away.
+      parameters:
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: warehouse
+        schema:
+          type: integer
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockLevels'
+          description: ''
+  /api/v1/inventory/transfers/:
+    get:
+      operationId: v1_inventory_transfers_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: رقم الصفحة ضمن النتائج المقسمة.
+        schema:
+          type: integer
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTransferList'
+          description: ''
+    post:
+      operationId: v1_inventory_transfers_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransferRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TransferRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/inventory/transfers/{id}/:
+    get:
+      operationId: v1_inventory_transfers_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا stock transfer.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transfer'
+          description: ''
+    delete:
+      operationId: v1_inventory_transfers_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا stock transfer.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/inventory/units/:
+    get:
+      operationId: v1_inventory_units_list
+      description: List before the create mixin so the new record gets the request's
+        company.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Unit'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+    post:
+      operationId: v1_inventory_units_create
+      description: List before the create mixin so the new record gets the request's
+        company.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnitRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UnitRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UnitRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unit'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/inventory/units/{id}/:
+    get:
+      operationId: v1_inventory_units_retrieve
+      description: List before the create mixin so the new record gets the request's
+        company.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا unit.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unit'
+          description: ''
+    put:
+      operationId: v1_inventory_units_update
+      description: List before the create mixin so the new record gets the request's
+        company.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا unit.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnitRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UnitRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UnitRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unit'
+          description: ''
+  /api/v1/inventory/warehouses/:
+    get:
+      operationId: v1_inventory_warehouses_list
+      description: List before the create mixin so the new record gets the request's
+        company.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Warehouse'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+    post:
+      operationId: v1_inventory_warehouses_create
+      description: List before the create mixin so the new record gets the request's
+        company.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarehouseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/WarehouseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/WarehouseRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warehouse'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/inventory/warehouses/{id}/:
+    get:
+      operationId: v1_inventory_warehouses_retrieve
+      description: List before the create mixin so the new record gets the request's
+        company.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا warehouse.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warehouse'
+          description: ''
+    put:
+      operationId: v1_inventory_warehouses_update
+      description: List before the create mixin so the new record gets the request's
+        company.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا warehouse.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WarehouseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/WarehouseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/WarehouseRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Warehouse'
           description: ''
   /api/v1/journal-entries/:
     get:
@@ -673,6 +1670,161 @@ paths:
               schema:
                 $ref: '#/components/schemas/TrialBalance'
           description: ''
+  /api/v1/treasury/cash-counts/:
+    get:
+      operationId: v1_treasury_cash_counts_list
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: رقم الصفحة ضمن النتائج المقسمة.
+        schema:
+          type: integer
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCashCountList'
+          description: ''
+    post:
+      operationId: v1_treasury_cash_counts_create
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CashCountCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CashCountCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CashCountCreateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CashCount'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/treasury/cash-counts/{id}/:
+    get:
+      operationId: v1_treasury_cash_counts_retrieve
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا Cash count.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CashCount'
+          description: ''
+  /api/v1/treasury/overview/:
+    get:
+      operationId: v1_treasury_overview_retrieve
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TreasuryOverview'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/treasury/vouchers/:
+    post:
+      operationId: v1_treasury_vouchers_create
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoucherRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VoucherRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VoucherRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoucherResult'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
 components:
   schemas:
     Account:
@@ -774,6 +1926,118 @@ components:
     BlankEnum:
       enum:
       - ''
+    BoxFigures:
+      type: object
+      properties:
+        account:
+          type: integer
+        code:
+          type: string
+        name:
+          type: string
+        posted:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        pending:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        book:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+      required:
+      - account
+      - book
+      - code
+      - name
+      - pending
+      - posted
+    CashCount:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        box:
+          type: integer
+          readOnly: true
+        box_code:
+          type: string
+          readOnly: true
+        count_date:
+          type: string
+          format: date
+          readOnly: true
+        counted_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,2})?$
+          readOnly: true
+          title: Counted cash
+        book_balance:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,2})?$
+          readOnly: true
+        difference:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,2})?$
+          readOnly: true
+        breakdown:
+          readOnly: true
+        notes:
+          type: string
+          readOnly: true
+        counted_by:
+          type: string
+          readOnly: true
+        entry:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - book_balance
+      - box
+      - box_code
+      - breakdown
+      - count_date
+      - counted_by
+      - counted_total
+      - created_at
+      - difference
+      - entry
+      - id
+      - notes
+    CashCountCreateRequest:
+      type: object
+      properties:
+        box:
+          type: integer
+        count_date:
+          type: string
+          format: date
+        quantities:
+          type: object
+          additionalProperties:
+            type: integer
+            minimum: 0
+          description: 'Quantity per denomination, e.g. {''200'': 3, ''0.5'': 4}'
+        notes:
+          type: string
+          default: ''
+          maxLength: 300
+        adjust:
+          type: boolean
+          default: false
+      required:
+      - box
+      - quantities
     CompanyRole:
       type: object
       properties:
@@ -787,6 +2051,107 @@ components:
       - id
       - name
       - role
+    Count:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        number:
+          type: string
+          readOnly: true
+        warehouse:
+          type: integer
+          readOnly: true
+        counted_at:
+          type: string
+          format: date-time
+          readOnly: true
+        counted_by:
+          type: string
+          readOnly: true
+        notes:
+          type: string
+          readOnly: true
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountLine'
+          readOnly: true
+      required:
+      - counted_at
+      - counted_by
+      - id
+      - lines
+      - notes
+      - number
+      - warehouse
+    CountCreateRequest:
+      type: object
+      properties:
+        warehouse:
+          type: integer
+        notes:
+          type: string
+          default: ''
+          maxLength: 300
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountInputLineRequest'
+      required:
+      - lines
+      - warehouse
+    CountInputLineRequest:
+      type: object
+      properties:
+        product:
+          type: integer
+        counted_qty:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,11}(?:\.\d{0,3})?$
+      required:
+      - counted_qty
+      - product
+    CountLine:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          type: integer
+          readOnly: true
+        product_code:
+          type: string
+          readOnly: true
+        book_qty:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,11}(?:\.\d{0,3})?$
+        counted_qty:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,11}(?:\.\d{0,3})?$
+        difference:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,11}(?:\.\d{0,3})?$
+      required:
+      - book_qty
+      - counted_qty
+      - difference
+      - id
+      - product
+      - product_code
+    CsrfToken:
+      type: object
+      properties:
+        csrfToken:
+          type: string
+      required:
+      - csrfToken
     GeneralLedger:
       type: object
       properties:
@@ -803,6 +2168,72 @@ components:
           type: string
       required:
       - status
+    ItemCard:
+      type: object
+      properties:
+        opening_qty:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,11}(?:\.\d{0,3})?$
+        opening_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemCardRow'
+      required:
+      - opening_qty
+      - opening_value
+      - rows
+    ItemCardRow:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        doc_type:
+          type: string
+        doc_id:
+          type: integer
+        doc_number:
+          type: string
+        warehouse:
+          type: integer
+        qty_in:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,11}(?:\.\d{0,3})?$
+          nullable: true
+        qty_out:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,11}(?:\.\d{0,3})?$
+          nullable: true
+        value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        balance_qty:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,11}(?:\.\d{0,3})?$
+        balance_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+      required:
+      - balance_qty
+      - balance_value
+      - date
+      - doc_id
+      - doc_number
+      - doc_type
+      - qty_in
+      - qty_out
+      - value
+      - warehouse
     JournalEntry:
       type: object
       properties:
@@ -939,16 +2370,6 @@ components:
           maxLength: 300
       required:
       - account
-    KindEnum:
-      enum:
-      - customer
-      - supplier
-      - both
-      type: string
-      description: |-
-        * `customer` - Customer
-        * `supplier` - Supplier
-        * `both` - Customer and supplier
     Ledger:
       type: object
       properties:
@@ -980,6 +2401,25 @@ components:
       - rows
       - total_credit
       - total_debit
+    LedgerComparison:
+      type: object
+      properties:
+        posted:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        all:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        difference:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+      required:
+      - all
+      - difference
+      - posted
     LedgerRow:
       type: object
       properties:
@@ -1023,6 +2463,36 @@ components:
       - partner
       - status
       - sub_account
+    LockStatus:
+      type: object
+      properties:
+        locked:
+          type: boolean
+        held_by_me:
+          type: boolean
+        holder:
+          type: string
+          nullable: true
+        minutes_left:
+          type: integer
+      required:
+      - held_by_me
+      - holder
+      - locked
+      - minutes_left
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
     Me:
       type: object
       properties:
@@ -1035,6 +2505,52 @@ components:
       required:
       - companies
       - username
+    PaginatedCashCountList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CashCount'
+    PaginatedCountList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Count'
     PaginatedJournalEntryList:
       type: object
       required:
@@ -1058,6 +2574,75 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JournalEntry'
+    PaginatedProductList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    PaginatedReceiptList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Receipt'
+    PaginatedTransferList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transfer'
     Partner:
       type: object
       properties:
@@ -1069,7 +2654,7 @@ components:
           maxLength: 200
         kind:
           allOf:
-          - $ref: '#/components/schemas/KindEnum'
+          - $ref: '#/components/schemas/PartnerKindEnum'
           title: Type
         tax_id:
           type: string
@@ -1094,6 +2679,16 @@ components:
       required:
       - id
       - name
+    PartnerKindEnum:
+      enum:
+      - customer
+      - supplier
+      - both
+      type: string
+      description: |-
+        * `customer` - Customer
+        * `supplier` - Supplier
+        * `both` - Customer and supplier
     PartnerRequest:
       type: object
       properties:
@@ -1103,7 +2698,7 @@ components:
           maxLength: 200
         kind:
           allOf:
-          - $ref: '#/components/schemas/KindEnum'
+          - $ref: '#/components/schemas/PartnerKindEnum'
           title: Type
         tax_id:
           type: string
@@ -1170,6 +2765,220 @@ components:
       - posted_credit
       - posted_debit
       - rows
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          maxLength: 50
+        name:
+          type: string
+          maxLength: 200
+        name_en:
+          type: string
+          title: Name (English)
+          maxLength: 200
+        description:
+          type: string
+        unit:
+          type: integer
+        tax_exempt:
+          type: boolean
+          title: VAT exempt
+        tax_rate:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          title: VAT rate %
+          description: Leave blank to use the default rate
+        is_active:
+          type: boolean
+          title: Active
+      required:
+      - code
+      - id
+      - name
+      - unit
+    ProductRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 50
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        name_en:
+          type: string
+          title: Name (English)
+          maxLength: 200
+        description:
+          type: string
+        unit:
+          type: integer
+        tax_exempt:
+          type: boolean
+          title: VAT exempt
+        tax_rate:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          title: VAT rate %
+          description: Leave blank to use the default rate
+        is_active:
+          type: boolean
+          title: Active
+      required:
+      - code
+      - name
+      - unit
+    Receipt:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        number:
+          type: string
+          readOnly: true
+        date:
+          type: string
+          format: date
+        warehouse:
+          type: integer
+        supplier:
+          type: integer
+        supplier_invoice:
+          type: string
+          maxLength: 100
+        notes:
+          type: string
+          maxLength: 300
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReceiptLine'
+        total_cost:
+          type: string
+          readOnly: true
+        journal_entry:
+          type: integer
+          readOnly: true
+        journal_entry_status:
+          type: string
+          readOnly: true
+        locked_reason:
+          type: string
+          readOnly: true
+        created_by:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - id
+      - journal_entry
+      - journal_entry_status
+      - lines
+      - locked_reason
+      - number
+      - supplier
+      - total_cost
+      - warehouse
+    ReceiptLine:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          type: integer
+        quantity:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,11}(?:\.\d{0,3})?$
+        unit_cost:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,4})?$
+        line_total:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - line_total
+      - product
+      - quantity
+      - unit_cost
+    ReceiptLineRequest:
+      type: object
+      properties:
+        product:
+          type: integer
+        quantity:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,11}(?:\.\d{0,3})?$
+        unit_cost:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,4})?$
+      required:
+      - product
+      - quantity
+      - unit_cost
+    ReceiptRequest:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        warehouse:
+          type: integer
+        supplier:
+          type: integer
+        supplier_invoice:
+          type: string
+          maxLength: 100
+        notes:
+          type: string
+          maxLength: 300
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReceiptLineRequest'
+      required:
+      - lines
+      - supplier
+      - warehouse
+    RecentEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+          format: date
+        description:
+          type: string
+        status:
+          type: string
+      required:
+      - date
+      - description
+      - id
+      - status
     SideEnum:
       enum:
       - debit
@@ -1236,6 +3045,177 @@ components:
       description: |-
         * `draft` - Draft
         * `posted` - Posted
+    StockLevelRow:
+      type: object
+      properties:
+        product:
+          type: integer
+        product_code:
+          type: string
+        product_name:
+          type: string
+        unit:
+          type: string
+        warehouse:
+          type: integer
+        warehouse_code:
+          type: string
+        qty:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,11}(?:\.\d{0,3})?$
+        value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        avg_cost:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,12}(?:\.\d{0,4})?$
+      required:
+      - avg_cost
+      - product
+      - product_code
+      - product_name
+      - qty
+      - unit
+      - value
+      - warehouse
+      - warehouse_code
+    StockLevels:
+      type: object
+      properties:
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/StockLevelRow'
+        total_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        stock_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        ledger:
+          allOf:
+          - $ref: '#/components/schemas/LedgerComparison'
+          nullable: true
+      required:
+      - ledger
+      - rows
+      - stock_total
+      - total_value
+    Transfer:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        number:
+          type: string
+          readOnly: true
+        date:
+          type: string
+          format: date
+        from_warehouse:
+          type: integer
+        to_warehouse:
+          type: integer
+        notes:
+          type: string
+          maxLength: 300
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferLine'
+        locked_reason:
+          type: string
+          readOnly: true
+        created_by:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - created_by
+      - from_warehouse
+      - id
+      - lines
+      - locked_reason
+      - number
+      - to_warehouse
+    TransferLine:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          type: integer
+        quantity:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,11}(?:\.\d{0,3})?$
+      required:
+      - id
+      - product
+      - quantity
+    TransferLineRequest:
+      type: object
+      properties:
+        product:
+          type: integer
+        quantity:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,11}(?:\.\d{0,3})?$
+      required:
+      - product
+      - quantity
+    TransferRequest:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        from_warehouse:
+          type: integer
+        to_warehouse:
+          type: integer
+        notes:
+          type: string
+          maxLength: 300
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferLineRequest'
+      required:
+      - from_warehouse
+      - lines
+      - to_warehouse
+    TreasuryOverview:
+      type: object
+      properties:
+        boxes:
+          type: array
+          items:
+            $ref: '#/components/schemas/BoxFigures'
+        recent_entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecentEntry'
+        denominations:
+          type: array
+          items:
+            type: string
+      required:
+      - boxes
+      - denominations
+      - recent_entries
     TrialBalance:
       type: object
       properties:
@@ -1318,6 +3298,141 @@ components:
         * `equity` - Equity
         * `revenue` - Revenue
         * `expense` - Expenses
+    Unit:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        name_en:
+          type: string
+          title: Name (English)
+          maxLength: 50
+      required:
+      - id
+      - name
+    UnitRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        name_en:
+          type: string
+          title: Name (English)
+          maxLength: 50
+      required:
+      - name
+    VoucherKindEnum:
+      enum:
+      - collect
+      - refund
+      - deposit
+      - fund
+      - expense
+      - supplier
+      type: string
+      description: |-
+        * `collect` - collect
+        * `refund` - refund
+        * `deposit` - deposit
+        * `fund` - fund
+        * `expense` - expense
+        * `supplier` - supplier
+    VoucherRequest:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/VoucherKindEnum'
+        date:
+          type: string
+          format: date
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,2})?$
+        partner:
+          type: integer
+          nullable: true
+        expense_account:
+          type: integer
+          nullable: true
+        reference:
+          type: string
+          default: ''
+          maxLength: 100
+        note:
+          type: string
+          default: ''
+          maxLength: 200
+        post_now:
+          type: boolean
+          default: false
+      required:
+      - amount
+      - date
+      - kind
+    VoucherResult:
+      type: object
+      properties:
+        entry_id:
+          type: integer
+        posted:
+          type: boolean
+        post_error:
+          type: string
+      required:
+      - entry_id
+      - post_error
+      - posted
+    Warehouse:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          maxLength: 20
+        name:
+          type: string
+          maxLength: 100
+        name_en:
+          type: string
+          title: Name (English)
+          maxLength: 100
+        is_active:
+          type: boolean
+          title: Active
+      required:
+      - code
+      - id
+      - name
+    WarehouseRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 20
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        name_en:
+          type: string
+          title: Name (English)
+          maxLength: 100
+        is_active:
+          type: boolean
+          title: Active
+      required:
+      - code
+      - name
   securitySchemes:
     cookieAuth:
       type: apiKey
