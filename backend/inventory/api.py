@@ -7,7 +7,7 @@ from rest_framework.exceptions import APIException, PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from core.api import CapabilityMixin, django_to_drf
+from core.api import CapabilityMixin, PageSizePagination, django_to_drf
 from core.permissions import capabilities_for
 
 from . import services
@@ -109,6 +109,7 @@ class ProductViewSet(
 ):
     model = Product
     serializer_class = ProductSerializer
+    pagination_class = PageSizePagination
     http_method_names = ["get", "post", "put", "delete", "head", "options"]
     capability_by_action = {
         "list": "inventory.view", "retrieve": "inventory.view",

@@ -63,7 +63,8 @@ function JournalEditor({ id, entry }: { id: string | undefined; entry: JournalEn
   const byId = new Map((accounts.data ?? []).map((a) => [String(a.id), a]))
 
   const posted = entry?.status === 'posted'
-  const canEdit = !posted && (isNew ? can('journal.create') : can('journal.edit'))
+  const linked = !!entry?.source
+  const canEdit = !posted && !linked && (isNew ? can('journal.create') : can('journal.edit'))
   const sums = totals(lines)
   const balanced = isBalanced(lines)
   const used = lines.filter((l) => !isBlank(l))
@@ -140,6 +141,7 @@ function JournalEditor({ id, entry }: { id: string | undefined; entry: JournalEn
         {entry?.is_ai_generated && <Badge tone="slate">{t('journal.ai')}</Badge>}
       </div>
 
+      {linked && !posted && <p className="rounded-md bg-amber-50 p-3 text-sm text-amber-800">{t(`journal.linked.${entry?.source}`)}</p>}
       {posted && <p className="rounded-md bg-emerald-50 p-3 text-sm text-emerald-800">{t('journal.postedLocked')}</p>}
 
       <div className="grid gap-4 sm:grid-cols-[12rem_1fr]">
@@ -224,7 +226,7 @@ function JournalEditor({ id, entry }: { id: string | undefined; entry: JournalEn
             {t('journal.post')}
           </Button>
         )}
-        {!isNew && !posted && can('journal.delete') && (
+        {!isNew && !posted && entry?.source !== 'receipt' && can('journal.delete') && (
           <Button variant="danger" disabled={remove.isPending} onClick={() => { if (window.confirm(t('journal.confirmDelete'))) remove.mutate() }}>{t('journal.delete')}</Button>
         )}
         <Button variant="secondary" onClick={() => void navigate('/journal')}>{t('common.back')}</Button>

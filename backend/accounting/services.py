@@ -73,7 +73,7 @@ def _write_lines(entry, lines):
 
 
 @transaction.atomic
-def create_entry(*, company, user, date, description, lines, is_ai_generated=False):
+def create_entry(*, company, user, date, description, lines, is_ai_generated=False, source=""):
     """Create a draft entry with its lines. Drafts may be unbalanced."""
     validate_lines(company, lines)
     entry = JournalEntry.objects.create(
@@ -82,22 +82,27 @@ def create_entry(*, company, user, date, description, lines, is_ai_generated=Fal
         description=description,
         created_by=user,
         is_ai_generated=is_ai_generated,
+        source=source,
     )
     _write_lines(entry, lines)
     return entry
 
 
-def _locked_draft(entry):
+def _locked_draft(entry, allow_linked=False):
     locked = JournalEntry.objects.select_for_update().get(pk=entry.pk, company_id=entry.company_id)
     if locked.status == JournalEntry.Status.POSTED:
         raise ValidationError(_("Posted entries cannot be changed"))
+    if locked.source and not allow_linked:
+        raise ValidationError(
+            _("This entry was created by another document. Change that document instead.")
+        )
     return locked
 
 
 @transaction.atomic
-def update_entry(*, entry, date, description, lines):
+def update_entry(*, entry, date, description, lines, allow_linked=False):
     """Replace a draft's header and lines."""
-    locked = _locked_draft(entry)
+    locked = _locked_draft(entry, allow_linked)
     validate_lines(locked.company, lines)
     locked.date = date
     locked.description = description
@@ -109,8 +114,10 @@ def update_entry(*, entry, date, description, lines):
 
 
 @transaction.atomic
-def delete_entry(*, entry):
-    locked = _locked_draft(entry)
+def delete_entry(*, entry, allow_linked=False):
+    # a cash-count adjustment may be dropped (the count itself stays); a goods
+    # receipt's entry only goes with the receipt
+    locked = _locked_draft(entry, allow_linked or entry.source == "cash_count")
     for line in list(locked.lines.all()):
         line.delete()
     locked.delete()

@@ -36,6 +36,8 @@ jobs:
       - run: python manage.py makemigrations --check --dry-run
       - run: python manage.py spectacular --file /tmp/schema.yml --fail-on-warn
       - run: diff /tmp/schema.yml schema.yml
+      - run: python scripts/make_messages.py --check
+      - run: git diff --exit-code locale
       - run: pytest -q
 
   frontend:

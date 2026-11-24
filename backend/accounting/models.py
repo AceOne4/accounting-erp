@@ -108,6 +108,9 @@ class JournalEntry(CompanyOwned):
         verbose_name=_("Created by"),
     )
     is_ai_generated = models.BooleanField(_("AI generated"), default=False)
+    # entries made by another document (goods receipt, cash count) are changed through
+    # that document, never directly
+    source = models.CharField(_("Source"), max_length=20, blank=True, default="")
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     posted_at = models.DateTimeField(_("Posted at"), null=True, blank=True)
     posted_by = models.ForeignKey(

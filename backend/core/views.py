@@ -107,3 +107,37 @@ class LogoutView(APIView):
     def post(self, request):
         logout(request)
         return Response(status=204)
+
+
+class TokenView(APIView):
+    """POST: exchange username + password for an API token (for the mobile app).
+    Send it as `Authorization: Token <key>`; no CSRF is needed for token requests."""
+
+    permission_classes = [AllowAny]
+    authentication_classes: list = []
+    throttle_scope = "login"
+
+    @extend_schema(
+        request=LoginSerializer,
+        responses=inline_serializer("TokenResponse", {"token": serializers.CharField()}),
+        auth=[],
+    )
+    def post(self, request):
+        from rest_framework.authtoken.models import Token
+
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = authenticate(request, **serializer.validated_data)
+        if user is None or not user.is_active:
+            raise AuthenticationFailed(_("Wrong username or password"))
+        token, _created = Token.objects.get_or_create(user=user)
+        return Response({"token": token.key})
+
+
+class TokenRevokeView(APIView):
+    @extend_schema(request=None, responses={204: None})
+    def post(self, request):
+        from rest_framework.authtoken.models import Token
+
+        Token.objects.filter(user=request.user).delete()
+        return Response(status=204)

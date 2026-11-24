@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { difference, formatMoney } from './money'
+import { difference, formatMoney, formatQty } from './money'
 
 describe('money', () => {
   it('adds without floating point error', () => {
@@ -16,5 +16,14 @@ describe('money', () => {
   it('reports an unbalanced entry', () => {
     expect(difference('1000.00', '900.00').isZero()).toBe(false)
     expect(difference('1000.00', '1000.00').isZero()).toBe(true)
+  })
+})
+
+describe('formatQty', () => {
+  it('trims zeros and groups thousands', () => {
+    expect(formatQty('10.000')).toBe('10')
+    expect(formatQty('1234.500')).toBe('1,234.5')
+    expect(formatQty('0.125')).toBe('0.125')
+    expect(formatQty('0')).toBe('0')
   })
 })

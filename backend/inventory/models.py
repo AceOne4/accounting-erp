@@ -10,7 +10,7 @@ from decimal import ROUND_HALF_UP, Decimal
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from django.utils.translation import get_language, gettext_lazy as _
 from simple_history.models import HistoricalRecords
@@ -28,16 +28,46 @@ def localized(obj):
     return obj.name
 
 
+class DocumentSequence(models.Model):
+    """Last number used per company and document prefix (RC, TR, CNT)."""
+
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="+")
+    prefix = models.CharField(max_length=10)
+    last = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["company", "prefix"], name="sequence_unique")
+        ]
+
+
+def next_number(model, company, prefix):
+    """RC-00001, RC-00002, ... counted separately for every company."""
+    with transaction.atomic():
+        seq, created = DocumentSequence.objects.select_for_update().get_or_create(
+            company=company, prefix=prefix
+        )
+        if created:  # continue after any numbers that already exist
+            used = model.objects.filter(company=company, number__startswith=prefix + "-")
+            seq.last = max(
+                (int(n.rsplit("-", 1)[1]) for n in used.values_list("number", flat=True)
+                 if n.rsplit("-", 1)[1].isdigit()),
+                default=0,
+            )
+        seq.last += 1
+        seq.save()
+        return "%s-%05d" % (prefix, seq.last)
+
+
 class NumberedMixin:
-    """Gives a document a number such as RC-00007 once it has an id."""
+    """Gives a new document the next number of its company, e.g. RC-00007."""
 
     prefix = "DOC"
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
         if not self.number:
-            self.number = "%s-%05d" % (self.prefix, self.pk)
-            type(self).objects.filter(pk=self.pk).update(number=self.number)
+            self.number = next_number(type(self), self.company, self.prefix)
+        super().save(*args, **kwargs)
 
 
 class Unit(CompanyOwned):

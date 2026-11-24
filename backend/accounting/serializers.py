@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 from core.api import CompanyPrimaryKeyRelatedField, django_to_drf
@@ -27,24 +28,24 @@ class AccountSerializer(serializers.ModelSerializer):
         if self.instance:
             clash = clash.exclude(pk=self.instance.pk)
         if clash.exists():
-            raise serializers.ValidationError({"code": "An account with this code already exists"})
+            raise serializers.ValidationError({"code": _("An account with this code already exists")})
 
         parent = attrs.get("parent", getattr(self.instance, "parent", None))
         if parent is not None:
             if parent.is_leaf:
-                raise serializers.ValidationError({"parent": "The parent must be a non-leaf account"})
+                raise serializers.ValidationError({"parent": _("The parent must be a non-leaf account")})
             if self.instance and parent.pk == self.instance.pk:
-                raise serializers.ValidationError({"parent": "An account cannot be its own parent"})
+                raise serializers.ValidationError({"parent": _("An account cannot be its own parent")})
 
         if self.instance:
             is_leaf = attrs.get("is_leaf", self.instance.is_leaf)
             if is_leaf and self.instance.children.exists():
                 raise serializers.ValidationError(
-                    {"is_leaf": "An account with sub-accounts cannot accept entries"}
+                    {"is_leaf": _("An account with sub-accounts cannot accept entries")}
                 )
             if not is_leaf and self.instance.journalline_set.exists():
                 raise serializers.ValidationError(
-                    {"is_leaf": "An account that already has entries must stay a leaf"}
+                    {"is_leaf": _("An account that already has entries must stay a leaf")}
                 )
         return attrs
 
@@ -85,6 +86,7 @@ class JournalEntrySerializer(serializers.ModelSerializer):
             "description",
             "status",
             "is_ai_generated",
+            "source",
             "created_by",
             "created_at",
             "posted_by",
@@ -94,7 +96,7 @@ class JournalEntrySerializer(serializers.ModelSerializer):
             "missing_partner_lines",
             "lines",
         ]
-        read_only_fields = ["status", "is_ai_generated", "created_at", "posted_at"]
+        read_only_fields = ["status", "is_ai_generated", "source", "created_at", "posted_at"]
 
     @staticmethod
     def _line_inputs(lines):

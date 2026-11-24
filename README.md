@@ -52,8 +52,8 @@ and English are both first-class.
   `core.CompanyOwned` base every business table must inherit. Changing this later
   touches every table.
 - **Mobile app planned (later).** The API lives under `/api/v1/` so published app versions
-  keep working while the web evolves. Web uses session cookies; the mobile app will need
-  token login added alongside (not built yet). Business rules stay in Django services,
+  keep working while the web evolves. Web uses session cookies; the mobile app signs in with
+  `POST /api/v1/auth/token/` and sends `Authorization: Token <key>` (the app itself is not built). Business rules stay in Django services,
   never in React, so a mobile client gets identical behaviour.
 - **Hosted locally until the system is finished.** No production deployment yet; run the
   steps below. Production hardening (gunicorn behind a reverse proxy, backups) comes later.
@@ -82,7 +82,7 @@ npm install
 npm run dev                       # http://localhost:5173, proxies /api to :8000
 ```
 
-Tests: `cd backend && pytest` (set `DJANGO_DB=sqlite` if you have no Postgres) and
+Tests: `cd backend && pytest` (set `DJANGO_DB=sqlite` if you have no Postgres; `DJANGO_DEBUG=1` for local runs) and
 `cd frontend && npm test`.
 
 After changing the API: `cd backend && python manage.py spectacular --file schema.yml`
@@ -124,24 +124,27 @@ A receipt or transfer is locked once its entry is posted or its stock has been u
 **Sign-in:** `GET /api/v1/auth/csrf/`, then `POST /api/v1/auth/login/` with the token in
 `X-CSRFToken`; `POST /api/v1/auth/logout/`. Logged-out requests answer 403 (session auth).
 
-**Frontend (so far):** sign-in, company switcher, app shell (Arabic RTL / English LTR) and the
-journal screens: list with filters, and an entry form with live exact balance check, save draft,
-post and delete (shown only when the role allows). Treasury, inventory and report screens are next.
+**Journal links:** entries made by a stock receipt or a cash count carry a `source`. Receipt
+entries are edited only from the receipt; cash-count entries cannot be edited (post or delete
+only). Receipts, transfers and counts are numbered per company (RC-/TR-/CNT-00001).
 
-**Run it locally:**
-```bash
-docker compose up -d db                      # PostgreSQL
-cd backend && python manage.py migrate
-python manage.py createsuperuser
-python manage.py seed_company "My Company" --user <username> --role chief_accountant
-python manage.py runserver                   # API on :8000
-cd ../frontend && npm run dev                # app on :5173 (proxies /api to :8000)
-```
-Browser tests (need the stack above running): `CHROME_PATH=/path/to/chrome npm run e2e`
-(`E2E_USER` / `E2E_PASS` = a chief accountant of the seeded company).
+**Users:** a system admin manages the company's members in the app or at `/api/v1/users/`
+(add, change role, reset password, remove). Nobody can change their own access.
 
-**Not ported yet:** Arabic translations of API messages, user/role
-management screens, freight/free-goods accounts (504/505 exist in the chart but nothing posts
-to them yet), locking of linked entries against direct edits. Document numbers
-(RC-, TR-, CNT-) are unique but share one counter across companies.
-Run `pytest` for the backend suite (128 tests, also run against PostgreSQL).
+**Mobile sign-in:** `POST /api/v1/auth/token/` returns a key; `POST /api/v1/auth/token/revoke/`
+signs out. Same permissions as the web.
+
+**Arabic messages:** API errors follow `Accept-Language` (the web app sends it). After adding
+or changing any user-facing backend text run `python scripts/make_messages.py` (extracts,
+merges, compiles, and lists what still needs an Arabic translation); CI runs it with `--check`
+and fails if anything is untranslated or the committed files are stale.
+
+**Frontend:** sign-in, company switcher, Arabic RTL / English LTR, and screens for journal
+entries, customers & suppliers, chart of accounts, treasury (vouchers, cash counts), inventory
+(stock levels, item card, receipts, transfers, counts, products/warehouses/units), reports
+(trial balance, ledger, statement) and users. Browser tests: `cd frontend && npx playwright test`
+against a running backend and Vite (see `playwright.config.ts`; set `LOGIN_THROTTLE=1000/min`
+on the backend for the test run, because every test signs in).
+
+**Not built yet:** AI draft features, the mobile app, production deployment (gunicorn, HTTPS,
+backups). Accounts 504 and 505 exist in the chart but nothing posts to them yet.

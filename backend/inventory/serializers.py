@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 from accounting.models import Partner
@@ -27,7 +28,7 @@ class UnitSerializer(serializers.ModelSerializer):
         if self.instance:
             clash = clash.exclude(pk=self.instance.pk)
         if clash.exists():
-            raise serializers.ValidationError("A unit with this name already exists")
+            raise serializers.ValidationError(_("A unit with this name already exists"))
         return value
 
 
@@ -41,7 +42,7 @@ class WarehouseSerializer(serializers.ModelSerializer):
         if self.instance:
             clash = clash.exclude(pk=self.instance.pk)
         if clash.exists():
-            raise serializers.ValidationError("A warehouse with this code already exists")
+            raise serializers.ValidationError(_("A warehouse with this code already exists"))
         return value
 
 
@@ -66,10 +67,10 @@ class ProductSerializer(serializers.ModelSerializer):
                 for field in ("code", "unit"):
                     if field in attrs and attrs[field] != getattr(self.instance, field):
                         raise serializers.ValidationError(
-                            {field: "Cannot be changed once the product has stock movements"}
+                            {field: _("Cannot be changed once the product has stock movements")}
                         )
         if clash.exists():
-            raise serializers.ValidationError({"code": "A product with this code already exists"})
+            raise serializers.ValidationError({"code": _("A product with this code already exists")})
         return attrs
 
 

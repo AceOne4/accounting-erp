@@ -1,10 +1,15 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 
-import ComingSoon from './pages/ComingSoon'
+import Accounts from './pages/Accounts'
+import Inventory from './pages/Inventory'
 import JournalForm from './pages/JournalForm'
 import JournalList from './pages/JournalList'
 import Login from './pages/Login'
+import Partners from './pages/Partners'
+import Reports from './pages/Reports'
 import Shell from './pages/Shell'
+import Treasury from './pages/Treasury'
+import Users from './pages/Users'
 import { SessionProvider, useSession } from './session'
 
 function Gate() {
@@ -18,9 +23,12 @@ function Gate() {
         <Route path="journal" element={<JournalList />} />
         <Route path="journal/new" element={<JournalForm />} />
         <Route path="journal/:id" element={<JournalForm />} />
-        <Route path="treasury" element={<ComingSoon titleKey="nav.treasury" />} />
-        <Route path="inventory" element={<ComingSoon titleKey="nav.inventory" />} />
-        <Route path="reports" element={<ComingSoon titleKey="nav.reports" />} />
+        <Route path="partners" element={<Partners />} />
+        <Route path="accounts" element={<Accounts />} />
+        <Route path="treasury" element={<Treasury />} />
+        <Route path="inventory/*" element={<Inventory />} />
+        <Route path="reports/*" element={<Reports />} />
+        <Route path="users" element={<Users />} />
         <Route path="*" element={<Navigate to="/journal" replace />} />
       </Route>
     </Routes>

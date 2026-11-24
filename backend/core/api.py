@@ -4,6 +4,7 @@ from django.db.models import ProtectedError
 from django.utils.translation import gettext as _
 from rest_framework import serializers
 from rest_framework.exceptions import ParseError, PermissionDenied
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import exception_handler as drf_exception_handler
@@ -95,3 +96,10 @@ def exception_handler(exc, context):
             {"detail": _("This record is used elsewhere and cannot be deleted")}, status=409
         )
     return drf_exception_handler(exc, context)
+
+
+class PageSizePagination(PageNumberPagination):
+    """Default paging, but a client may ask for more (?page_size=1000) to fill a dropdown."""
+
+    page_size_query_param = "page_size"
+    max_page_size = 1000

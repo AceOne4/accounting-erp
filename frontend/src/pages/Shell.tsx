@@ -5,27 +5,30 @@ import { LANGUAGES, setLanguage } from '../i18n'
 import { useSession } from '../session'
 
 const NAV = [
-  { to: '/journal', key: 'nav.journal', ready: true },
-  { to: '/treasury', key: 'nav.treasury', ready: false },
-  { to: '/inventory', key: 'nav.inventory', ready: false },
-  { to: '/reports', key: 'nav.reports', ready: false },
+  { to: '/journal', key: 'nav.journal' },
+  { to: '/partners', key: 'nav.partners' },
+  { to: '/accounts', key: 'nav.accounts' },
+  { to: '/treasury', key: 'nav.treasury' },
+  { to: '/inventory', key: 'nav.inventory' },
+  { to: '/reports', key: 'nav.reports' },
+  { to: '/users', key: 'nav.users', capability: 'users.manage' },
 ]
 
 export default function Shell() {
   const { t, i18n } = useTranslation()
-  const { user, company, setCompany, logout } = useSession()
+  const { user, company, setCompany, logout, can } = useSession()
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-900">
       <aside className="w-56 shrink-0 bg-slate-900 p-4 text-slate-100">
         <div className="mb-6 text-lg font-semibold">{t('app.title')}</div>
         <nav className="space-y-1">
-          {NAV.map((item) => (
+          {NAV.filter((item) => !item.capability || can(item.capability)).map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `block rounded-md px-3 py-2 text-sm ${isActive ? 'bg-slate-700' : 'hover:bg-slate-800'} ${item.ready ? '' : 'opacity-60'}`
+                `block rounded-md px-3 py-2 text-sm ${isActive ? 'bg-slate-700' : 'hover:bg-slate-800'}`
               }
             >
               {t(item.key)}

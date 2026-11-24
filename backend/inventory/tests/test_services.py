@@ -28,7 +28,7 @@ def transfer(company, user, frm, to, product, amount, date="2026-11-05"):
 # ---------------------------------------------------------------- receipts
 def test_receipt_builds_layers_moves_and_draft_entry(company, receive, widget, main_wh, supplier):
     receipt = receive(widget, "10", "2.5")
-    assert receipt.number == f"RC-{receipt.pk:05d}"
+    assert receipt.number == "RC-00001"
     assert qty(widget, main_wh) == D("10")
 
     move = StockMove.objects.get()
@@ -302,3 +302,32 @@ def test_locks_are_per_company(company, other_company, chief, make_user):
     other_user = make_user("zed", other_company, "chief_accountant")
     assert services.acquire_lock(company, chief) is None
     assert services.acquire_lock(other_company, other_user) is None
+
+
+# ----------------------------------------------------- numbering per company
+def test_document_numbers_are_counted_per_company(company, other_company, chief, make_user, widget, receive, supplier):
+    from accounting.models import Partner
+    from inventory.models import Product, Unit, Warehouse
+
+    first = receive(widget, "1", "1")
+    second = receive(widget, "1", "1")
+    assert (first.number, second.number) == ("RC-00001", "RC-00002")
+
+    other_user = make_user("zed", other_company, "chief_accountant")
+    unit = Unit.objects.create(company=other_company, name="Box")
+    product = Product.objects.create(company=other_company, code="W", name="W", unit=unit)
+    wh = Warehouse.objects.create(company=other_company, code="M", name="Main")
+    sup = Partner.objects.create(company=other_company, name="S", kind="supplier")
+    theirs = services.create_receipt(
+        company=other_company, user=other_user, date="2026-11-01", warehouse=wh, supplier=sup,
+        lines=[services.ReceiptLineInput(product, D("1"), D("1"))],
+    )
+    assert theirs.number == "RC-00001"  # the other company starts at 1
+
+
+def test_failed_document_does_not_burn_a_number(company, chief, main_wh, supplier, widget, receive):
+    with pytest.raises(ValidationError):
+        services.create_receipt(
+            company=company, user=chief, date="2026-11-01", warehouse=main_wh, supplier=supplier, lines=[],
+        )
+    assert receive(widget, "1", "1").number == "RC-00001"

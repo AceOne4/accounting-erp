@@ -4,6 +4,7 @@ from django.db.models import Count, DecimalField, Q, Sum, Value
 from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema, extend_schema_view
+from django.utils.translation import gettext as _
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -192,7 +193,7 @@ class PartnerStatementView(CapabilityMixin, APIView):
         params = _params(PartnerStatementParams, request)
         partner = get_object_or_404(Partner, pk=params["partner"], company=request.company)
         if params.get("date_from") and params.get("date_to") and params["date_from"] > params["date_to"]:
-            raise ValidationError({"date_to": "The end date is before the start date"})
+            raise ValidationError({"date_to": _("The end date is before the start date")})
         data = reports.partner_statement(
             request.company,
             partner,

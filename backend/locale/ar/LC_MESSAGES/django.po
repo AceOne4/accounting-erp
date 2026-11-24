@@ -1,0 +1,1205 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ERP\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
+
+# ================= Models =================
+msgid "Assets"
+msgstr "أصول"
+
+msgid "Liabilities"
+msgstr "التزامات"
+
+msgid "Equity"
+msgstr "حقوق ملكية"
+
+msgid "Revenue"
+msgstr "إيرادات"
+
+msgid "Expenses"
+msgstr "مصروفات"
+
+msgid "Code"
+msgstr "الكود"
+
+msgid "Account name"
+msgstr "اسم الحساب"
+
+msgid "Account name (English)"
+msgstr "اسم الحساب (بالإنجليزية)"
+
+msgid "Type"
+msgstr "النوع"
+
+msgid "Parent account"
+msgstr "الحساب الرئيسي"
+
+msgid "Leaf account (accepts entries)"
+msgstr "حساب فرعي (يقبل قيود)"
+
+msgid "Requires customer/supplier"
+msgstr "يتطلب تحديد عميل/مورد"
+
+msgid "Enable for receivable and payable accounts"
+msgstr "فعّلها لحسابات العملاء والموردين"
+
+msgid "Account"
+msgstr "الحساب"
+
+msgid "Chart of accounts"
+msgstr "شجرة الحسابات"
+
+msgid "Customer"
+msgstr "عميل"
+
+msgid "Supplier"
+msgstr "مورد"
+
+msgid "Customer and supplier"
+msgstr "عميل ومورد"
+
+msgid "Name"
+msgstr "الاسم"
+
+msgid "Tax ID"
+msgstr "الرقم الضريبي"
+
+msgid "Phone"
+msgstr "التليفون"
+
+msgid "Active"
+msgstr "نشط"
+
+msgid "Customer / Supplier"
+msgstr "العميل / المورد"
+
+msgid "Customers and suppliers"
+msgstr "العملاء والموردين"
+
+msgid "Draft"
+msgstr "مسودة"
+
+msgid "Posted"
+msgstr "معتمد"
+
+msgid "Date"
+msgstr "التاريخ"
+
+msgid "Description"
+msgstr "البيان"
+
+msgid "Status"
+msgstr "الحالة"
+
+msgid "Created by"
+msgstr "أنشأه"
+
+msgid "AI generated"
+msgstr "مُنشأ بالذكاء الاصطناعي"
+
+msgid "Created at"
+msgstr "تاريخ الإنشاء"
+
+msgid "Journal entry"
+msgstr "قيد يومية"
+
+msgid "Journal entries"
+msgstr "قيود اليومية"
+
+msgid "Can post journal entries"
+msgstr "يمكنه اعتماد قيود اليومية"
+
+msgid "Can view financial reports"
+msgstr "يمكنه عرض التقارير المالية"
+
+msgid "Can manage users and roles"
+msgstr "يمكنه إدارة المستخدمين والأدوار"
+
+msgid "Total debit"
+msgstr "إجمالي المدين"
+
+msgid "Total credit"
+msgstr "إجمالي الدائن"
+
+msgid "The entry is already posted"
+msgstr "القيد معتمد بالفعل"
+
+msgid "The entry has no lines"
+msgstr "القيد مفيهوش سطور"
+
+msgid "The entry is unbalanced: debit %(debit)s / credit %(credit)s"
+msgstr "القيد غير متزن: مدين %(debit)s / دائن %(credit)s"
+
+msgid ""
+"The entry is incomplete: select the customer/supplier on the lines of "
+"(%(accounts)s)"
+msgstr "القيد ناقص: حدّد العميل/المورد في سطور (%(accounts)s)"
+
+msgid "Entry"
+msgstr "القيد"
+
+msgid "Debit"
+msgstr "مدين"
+
+msgid "Credit"
+msgstr "دائن"
+
+msgid "Notes"
+msgstr "ملاحظات"
+
+msgid "Journal line"
+msgstr "سطر قيد"
+
+msgid "Journal lines"
+msgstr "سطور القيد"
+
+msgid "Amounts must be positive"
+msgstr "المبالغ لازم تكون موجبة"
+
+msgid "A line must be either debit or credit, not both"
+msgstr "السطر إما مدين أو دائن، مش الاتنين"
+
+msgid "A line must have a value"
+msgstr "السطر لازم يكون له قيمة"
+
+msgid "You cannot post entries to a parent account"
+msgstr "مينفعش القيد على حساب رئيسي"
+
+msgid "You must select the customer / supplier for the account (%(account)s)"
+msgstr "لازم تختار العميل / المورد لحساب (%(account)s)"
+
+msgid "Cash box"
+msgstr "الخزنة"
+
+msgid "Count date"
+msgstr "تاريخ الجرد"
+
+msgid "Counted cash"
+msgstr "النقدية بالجرد"
+
+msgid "Book balance"
+msgstr "الرصيد الدفتري"
+
+msgid "Difference"
+msgstr "الفرق"
+
+msgid "Breakdown"
+msgstr "تفصيل الفئات"
+
+msgid "Counted by"
+msgstr "تم الجرد بواسطة"
+
+msgid "Adjustment entry"
+msgstr "قيد التسوية"
+
+msgid "Cash count"
+msgstr "جرد الخزينة"
+
+msgid "Cash counts"
+msgstr "عمليات الجرد"
+
+# ================= Admin =================
+msgid "Accounting"
+msgstr "المحاسبة"
+
+msgid "Data completeness"
+msgstr "اكتمال البيانات"
+
+msgid "Incomplete (no customer/supplier)"
+msgstr "ناقص (بدون عميل/مورد)"
+
+msgid "Complete"
+msgstr "مكتمل"
+
+msgid "Incomplete"
+msgstr "ناقص"
+
+msgid "Statement"
+msgstr "كشف الحساب"
+
+msgid "View statement"
+msgstr "عرض الكشف"
+
+msgid ""
+"Entry #%(id)s is incomplete: the customer/supplier was not selected on the "
+"lines of (%(accounts)s). It will not appear in any statement and cannot be "
+"posted until it is completed."
+msgstr ""
+"القيد رقم %(id)s ناقص: لم يتم تحديد العميل/المورد في سطور (%(accounts)s). لن"
+" يظهر في كشف الحساب ولا يمكن اعتماده قبل استكماله."
+
+msgid "Post selected entries"
+msgstr "اعتماد القيود المحددة"
+
+msgid "Entry #%(id)s was posted"
+msgstr "تم اعتماد القيد رقم %(id)s"
+
+msgid "Entry #%(id)s: %(error)s"
+msgstr "القيد رقم %(id)s: %(error)s"
+
+msgid "ERP for Accountants"
+msgstr "نظام ERP للمحاسبين"
+
+msgid "Accounting system"
+msgstr "نظام المحاسبة"
+
+msgid "Dashboard"
+msgstr "لوحة التحكم"
+
+msgid "Run"
+msgstr "تنفيذ"
+
+msgid "Select an option"
+msgstr "اختر إجراءً"
+
+# ================= JavaScript strings =================
+msgid "Balance"
+msgstr "الرصيد"
+
+msgid "Entry is balanced"
+msgstr "القيد متزن"
+
+msgid "Enter the entry lines"
+msgstr "أدخل سطور القيد"
+
+msgid "Entry is unbalanced: difference {n}"
+msgstr "القيد غير متزن: الفرق {n}"
+
+msgid "Debit is larger"
+msgstr "المدين أكبر"
+
+msgid "Credit is larger"
+msgstr "الدائن أكبر"
+
+msgid "Selected entries"
+msgstr "القيود المحددة"
+
+msgid "Select one or more entries to see total debit, credit and balance"
+msgstr "حدّد قيدًا أو أكثر لعرض إجمالي المدين والدائن والرصيد"
+
+msgid "All selected entries are balanced"
+msgstr "كل القيود المحددة متزنة"
+
+msgid "There is a difference of {n}"
+msgstr "فيه فرق: {n}"
+
+msgid "Unbalanced entries: {n}"
+msgstr "عدد القيود غير المتزنة: {n}"
+
+# ================= Trial balance =================
+msgid "Trial balance"
+msgstr "ميزان المراجعة"
+
+msgid "Trial balance (posted entries only)"
+msgstr "ميزان المراجعة (القيود المعتمدة فقط)"
+
+msgid "Period movement"
+msgstr "حركة الفترة"
+
+msgid "Total"
+msgstr "الإجمالي"
+
+msgid "No posted entries"
+msgstr "لا توجد قيود معتمدة"
+
+# ================= Partner statement =================
+msgid "Customer / supplier statement"
+msgstr "كشف حساب عميل / مورد"
+
+msgid ""
+"There are <b>%(n)s</b> incomplete entries (customer/supplier lines with no "
+"partner selected) that do not appear in any statement."
+msgstr ""
+"فيه <b>%(n)s</b> قيد ناقص (سطور عملاء/موردين من غير تحديد الطرف) ومش ظاهرين "
+"في أي كشف حساب."
+
+msgid "View incomplete entries"
+msgstr "اعرض القيود الناقصة"
+
+msgid "— Select —"
+msgstr "— اختر —"
+
+msgid "From date"
+msgstr "من تاريخ"
+
+msgid "To date"
+msgstr "إلى تاريخ"
+
+msgid "All (posted + draft)"
+msgstr "الكل (معتمد + مسودة)"
+
+msgid "Posted only"
+msgstr "المعتمد فقط"
+
+msgid "Draft only"
+msgstr "المسودة فقط"
+
+msgid "Show statement"
+msgstr "عرض الكشف"
+
+msgid "Print"
+msgstr "طباعة"
+
+msgid "Beginning"
+msgstr "البداية"
+
+msgid "Today"
+msgstr "اليوم"
+
+msgid "Period"
+msgstr "الفترة"
+
+msgid "to"
+msgstr "إلى"
+
+msgid "Posted balance"
+msgstr "رصيد المعتمد"
+
+msgid "Pending entries (net)"
+msgstr "حركات تحت الاعتماد (صافي)"
+
+msgid "Expected balance after posting drafts"
+msgstr "الرصيد المتوقع بعد اعتماد المسودات"
+
+msgid "Entry no."
+msgstr "رقم القيد"
+
+msgid "Total balance"
+msgstr "الرصيد الشامل"
+
+msgid "Opening balance"
+msgstr "رصيد أول الفترة"
+
+msgid "No transactions in this period"
+msgstr "لا توجد حركات في هذه الفترة"
+
+msgid "Posted total"
+msgstr "إجمالي المعتمد"
+
+msgid "Pending total (draft)"
+msgstr "إجمالي تحت الاعتماد (مسودة)"
+
+msgid ""
+"Yellow rows are <b>draft</b> entries that are not posted yet. They are "
+"<b>not included</b> in the trial balance or the posted balance. The total "
+"balance shows the expected balance if all of them were posted."
+msgstr ""
+"السطور الصفراء قيود <b>مسودة</b> لسه ماتعتمدتش، وهي <b>مش داخلة</b> في ميزان"
+" المراجعة ولا في رصيد المعتمد. الرصيد الشامل بيوضح الرصيد المتوقع لو اتعتمدت"
+" كلها."
+
+msgid "Select a customer or supplier to view the statement."
+msgstr "اختر عميلًا أو موردًا لعرض الكشف."
+
+# ================= General ledger =================
+msgid "General ledger"
+msgstr "دفتر الأستاذ"
+
+msgid "— All accounts —"
+msgstr "— كل الحسابات —"
+
+msgid "Show ledger"
+msgstr "عرض الدفتر"
+
+msgid "Includes all sub-accounts"
+msgstr "يشمل كل الحسابات الفرعية"
+
+msgid "Closing balance"
+msgstr "رصيد آخر الفترة"
+
+msgid "Period total"
+msgstr "إجمالي الحركة"
+
+msgid "No accounts have transactions in this period"
+msgstr "لا توجد حسابات عليها حركة في هذه الفترة"
+
+msgid ""
+"The ledger shows posted entries by default. Draft entries are highlighted in"
+" yellow when you choose to include them."
+msgstr ""
+"الدفتر بيعرض القيود المعتمدة افتراضيًا، والقيود المسودة بتظهر باللون الأصفر "
+"لما تختار عرضها."
+
+# ================= Users and roles =================
+msgid "Users and roles"
+msgstr "المستخدمون والأدوار"
+
+msgid "Users"
+msgstr "المستخدمون"
+
+msgid "Add user"
+msgstr "إضافة مستخدم"
+
+msgid "Edit user"
+msgstr "تعديل مستخدم"
+
+msgid "Username"
+msgstr "اسم المستخدم"
+
+msgid "Full name"
+msgstr "الاسم بالكامل"
+
+msgid "First name"
+msgstr "الاسم الأول"
+
+msgid "Last name"
+msgstr "الاسم الأخير"
+
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+msgid "Role"
+msgstr "الدور"
+
+msgid "Last login"
+msgstr "آخر دخول"
+
+msgid "Never"
+msgstr "لم يدخل بعد"
+
+msgid "Superuser"
+msgstr "مدير عام"
+
+msgid "Inactive"
+msgstr "موقوف"
+
+msgid "Edit"
+msgstr "تعديل"
+
+msgid "Save"
+msgstr "حفظ"
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+msgid "Password"
+msgstr "كلمة السر"
+
+msgid "Confirm password"
+msgstr "تأكيد كلمة السر"
+
+msgid "Roles guide"
+msgstr "دليل الأدوار"
+
+msgid "Leave blank to keep the current password"
+msgstr "اتركها فارغة للإبقاء على كلمة السر الحالية"
+
+msgid "A user with this username already exists"
+msgstr "فيه مستخدم بنفس الاسم"
+
+msgid "Password is required for a new user"
+msgstr "كلمة السر مطلوبة للمستخدم الجديد"
+
+msgid "The two passwords do not match"
+msgstr "كلمتا السر غير متطابقتين"
+
+msgid "User %(name)s was created"
+msgstr "تم إنشاء المستخدم %(name)s"
+
+msgid "User %(name)s was updated"
+msgstr "تم تحديث المستخدم %(name)s"
+
+msgid "You cannot change your own role or deactivate yourself here."
+msgstr "مينفعش تغيّر دورك أو توقف حسابك من هنا."
+
+msgid "Superuser accounts are managed from the Django admin"
+msgstr "حسابات المدير العام بتتدار من لوحة Django فقط"
+
+msgid ""
+"Users are never deleted, so entry history stays intact. Deactivate a user to"
+" block access."
+msgstr ""
+"المستخدمون مابيتحذفوش عشان تاريخ القيود يفضل سليم. أوقف المستخدم لو عايز "
+"تمنعه من الدخول."
+
+msgid "Creates and edits draft entries. Cannot post."
+msgstr "ينشئ القيود المسودة ويعدّلها، ولا يعتمدها."
+
+msgid "Reviews, edits and posts entries. Cannot create new entries."
+msgstr "يراجع القيود ويعدّلها ويعتمدها، ولا ينشئ قيودًا جديدة."
+
+msgid "Posts entries and manages entries, accounts and partners."
+msgstr "يعتمد القيود ويدير القيود والحسابات والعملاء والموردين."
+
+msgid "Manages users and roles. Read-only access to everything else."
+msgstr "يدير المستخدمين والأدوار، وباقي النظام للقراءة فقط."
+
+# ================= Treasury =================
+msgid "Treasury"
+msgstr "الخزينة"
+
+msgid "posted"
+msgstr "معتمد"
+
+msgid "pending"
+msgstr "معلق"
+
+msgid "Operation"
+msgstr "العملية"
+
+msgid "Amount"
+msgstr "المبلغ"
+
+msgid "Expense account"
+msgstr "حساب المصروف"
+
+msgid "Reference (check / receipt / slip no.)"
+msgstr "المرجع (رقم الشيك / الإيصال / إيصال التوريد)"
+
+msgid "Post immediately"
+msgstr "اعتماد فوري"
+
+msgid "Collect from a customer (into the collections box)"
+msgstr "تحصيل من عميل (لخزنة التحصيلات)"
+
+msgid "Refund to a customer (from the collections box)"
+msgstr "مرتجع فلوس لعميل (من خزنة التحصيلات)"
+
+msgid "Deposit collections to the bank"
+msgstr "توريد التحصيلات للبنك"
+
+msgid "Fund the expenses box by check from the bank"
+msgstr "تغذية خزنة المصروفات بشيك من البنك"
+
+msgid "Pay an expense (from the expenses box)"
+msgstr "صرف مصروف (من خزنة المصروفات)"
+
+msgid "Pay a supplier (from the expenses box)"
+msgstr "دفع لمورد (من خزنة المصروفات)"
+
+msgid "You must select the customer / supplier for this operation"
+msgstr "لازم تختار العميل / المورد لهذه العملية"
+
+msgid "The selected customer/supplier type does not match this operation"
+msgstr "نوع العميل / المورد المختار لا يناسب هذه العملية"
+
+msgid "Select the expense account"
+msgstr "اختر حساب المصروف"
+
+msgid "Collection from %(partner)s"
+msgstr "تحصيل من %(partner)s"
+
+msgid "Refund to %(partner)s"
+msgstr "مرتجع للعميل %(partner)s"
+
+msgid "Deposit of collections to the bank"
+msgstr "توريد تحصيلات للبنك"
+
+msgid "Check withdrawal to fund the expenses box"
+msgstr "سحب بشيك لتغذية خزنة المصروفات"
+
+msgid "Expense: %(account)s"
+msgstr "مصروف: %(account)s"
+
+msgid "Payment to supplier %(partner)s"
+msgstr "دفع للمورد %(partner)s"
+
+msgid "Saved as a draft entry, but posting failed: %(error)s"
+msgstr "اتسجلت كقيد مسودة، لكن الاعتماد فشل: %(error)s"
+
+msgid "Operation saved and posted as entry"
+msgstr "تم حفظ العملية واعتمادها كقيد رقم"
+
+msgid "Operation saved as draft entry"
+msgstr "تم حفظ العملية كقيد مسودة رقم"
+
+msgid "The treasury accounts are missing. Run seed_treasury.py first."
+msgstr "حسابات الخزينة غير موجودة. شغّل seed_treasury.py الأول."
+
+msgid "Funded by checks from the bank; used to pay expenses"
+msgstr "بتتغذى بشيكات من البنك، وبتُصرف منها المصروفات"
+
+msgid ""
+"Receives customer collections, then deposited to the bank; used for customer"
+" refunds"
+msgstr "بتستقبل تحصيلات العملاء وبتتورّد للبنك، وبتُصرف منها مرتجعات العملاء"
+
+msgid "The balance of this box is negative"
+msgstr "رصيد الخزنة دي بالسالب"
+
+msgid "New operation"
+msgstr "عملية جديدة"
+
+msgid "Save operation"
+msgstr "حفظ العملية"
+
+msgid "Recent treasury operations"
+msgstr "آخر عمليات الخزينة"
+
+msgid "No operations yet"
+msgstr "لا توجد عمليات بعد"
+
+msgid ""
+"Every operation is saved as a draft entry. A reviewer posts it from the "
+"journal entries list."
+msgstr "كل عملية بتتسجل كقيد مسودة، والمراجع بيعتمدها من قيود اليومية."
+
+# ================= Cash count =================
+msgid "Cash shortage adjustment - %(box)s"
+msgstr "تسوية عجز الخزينة - %(box)s"
+
+msgid "Cash overage adjustment - %(box)s"
+msgstr "تسوية زيادة الخزينة - %(box)s"
+
+msgid "Select a cash box"
+msgstr "اختر الخزنة"
+
+msgid "Invalid quantity for %(den)s"
+msgstr "عدد غير صالح للفئة %(den)s"
+
+msgid "Cash count saved. Difference: %(diff)s"
+msgstr "تم حفظ الجرد. الفرق: %(diff)s"
+
+msgid "Denomination"
+msgstr "الفئة"
+
+msgid "Quantity"
+msgstr "العدد"
+
+msgid "Value"
+msgstr "القيمة"
+
+msgid "Cash matches the books"
+msgstr "الخزنة مطابقة للدفاتر"
+
+msgid "Shortage"
+msgstr "عجز"
+
+msgid "Overage"
+msgstr "زيادة"
+
+msgid "Create an adjustment entry (draft) for the difference"
+msgstr "إنشاء قيد تسوية (مسودة) بالفرق"
+
+msgid ""
+"The count is recorded with today's date and compared with the book balance "
+"(posted + pending entries)."
+msgstr ""
+"الجرد بيتسجل بتاريخ النهاردة وبيتقارن بالرصيد الدفتري (المعتمد + المعلق)."
+
+msgid "Save count"
+msgstr "حفظ الجرد"
+
+msgid "Previous counts"
+msgstr "الجرد السابق"
+
+msgid "No counts yet"
+msgstr "لا يوجد جرد سابق"
+
+# ================= Inventory =================
+msgid "Inventory"
+msgstr "المخزن"
+
+msgid "Name (English)"
+msgstr "الاسم (بالإنجليزية)"
+
+msgid "Unit"
+msgstr "الوحدة"
+
+msgid "Units"
+msgstr "الوحدات"
+
+msgid "Warehouse"
+msgstr "المخزن"
+
+msgid "Warehouses"
+msgstr "المخازن"
+
+msgid "Product"
+msgstr "الصنف"
+
+msgid "Products"
+msgstr "الأصناف"
+
+msgid "VAT exempt"
+msgstr "معفي من الضريبة"
+
+msgid "VAT rate %"
+msgstr "نسبة الضريبة %"
+
+msgid "Leave blank to use the default rate"
+msgstr "اتركها فارغة لاستخدام النسبة الافتراضية"
+
+msgid "Number"
+msgstr "الرقم"
+
+msgid "Supplier invoice no."
+msgstr "رقم فاتورة المورد"
+
+msgid "Goods receipt"
+msgstr "شحنة"
+
+msgid "Goods receipts"
+msgstr "الشحنات"
+
+msgid "Receipt line"
+msgstr "سطر شحنة"
+
+msgid "Receipt lines"
+msgstr "سطور الشحنة"
+
+msgid "Unit cost"
+msgstr "تكلفة الوحدة"
+
+msgid "Stock transfer"
+msgstr "تحويل مخزني"
+
+msgid "Stock transfers"
+msgstr "التحويلات المخزنية"
+
+msgid "From warehouse"
+msgstr "من مخزن"
+
+msgid "To warehouse"
+msgstr "إلى مخزن"
+
+msgid "Transfer line"
+msgstr "سطر تحويل"
+
+msgid "Transfer lines"
+msgstr "سطور التحويل"
+
+msgid "The source and destination warehouses must be different"
+msgstr "لازم يكون مخزن المصدر غير مخزن الوجهة"
+
+msgid "Stock layer"
+msgstr "دفعة مخزنية"
+
+msgid "Stock layers"
+msgstr "الدفعات المخزنية"
+
+msgid "Stock movement"
+msgstr "حركة مخزنية"
+
+msgid "Stock movements"
+msgstr "الحركات المخزنية"
+
+msgid "Transfer out"
+msgstr "تحويل صادر"
+
+msgid "Transfer in"
+msgstr "تحويل وارد"
+
+msgid "Stock count"
+msgstr "جرد مخزني"
+
+msgid "Stock counts"
+msgstr "جرد المخازن"
+
+msgid "Counted at"
+msgstr "وقت الجرد"
+
+msgid "Book quantity"
+msgstr "الكمية الدفترية"
+
+msgid "Counted quantity"
+msgstr "الكمية الفعلية"
+
+msgid "Can enter and release the inventory lock"
+msgstr "يمكنه دخول المخزن أثناء استخدام غيره وفك قفله"
+
+msgid "Insufficient stock"
+msgstr "الكمية المتاحة غير كافية"
+
+msgid "The inventory accounts are missing. Run seed_inventory.py first."
+msgstr "حسابات المخزن غير موجودة. شغّل seed_inventory.py الأول."
+
+msgid "Its journal entry is already posted"
+msgstr "قيدها معتمد بالفعل"
+
+msgid "Part of this receipt was already issued or transferred"
+msgstr "جزء من هذه الشحنة اتصرف أو اتحوّل بالفعل"
+
+msgid "Part of this transfer was already issued or transferred"
+msgstr "جزء من هذا التحويل اتصرف أو اتحوّل بالفعل"
+
+msgid "Exempt"
+msgstr "معفي"
+
+msgid "Default"
+msgstr "افتراضي"
+
+msgid "VAT"
+msgstr "الضريبة"
+
+msgid "Line total"
+msgstr "إجمالي السطر"
+
+msgid "Total cost"
+msgstr "إجمالي التكلفة"
+
+msgid "Entry status"
+msgstr "حالة القيد"
+
+msgid "Locked: %(reason)s"
+msgstr "مقفولة: %(reason)s"
+
+msgid "Editable (draft)"
+msgstr "قابلة للتعديل (مسودة)"
+
+msgid "Add at least one line"
+msgstr "أضف سطرًا واحدًا على الأقل"
+
+msgid ""
+"Insufficient stock of %(product)s: available %(have)s, requested %(qty)s"
+msgstr "الكمية غير كافية للصنف %(product)s: المتاح %(have)s والمطلوب %(qty)s"
+
+msgid ""
+"Goods receipt saved. A draft journal entry was created for the reviewer to "
+"post."
+msgstr "تم حفظ الشحنة وإنشاء قيد مسودة يعتمده المراجع."
+
+msgid "Transfer saved. The stock was moved between the warehouses."
+msgstr "تم حفظ التحويل ونقل الكميات بين المخازن."
+
+msgid "New stock count"
+msgstr "جرد مخزني جديد"
+
+msgid "Invalid quantity for %(product)s"
+msgstr "كمية غير صالحة للصنف %(product)s"
+
+msgid "Enter at least one counted quantity"
+msgstr "أدخل كمية فعلية لصنف واحد على الأقل"
+
+msgid "Stock count saved"
+msgstr "تم حفظ الجرد المخزني"
+
+msgid "You left the inventory module"
+msgstr "خرجت من وحدة المخزن"
+
+msgid "The inventory lock was released"
+msgstr "تم فك قفل المخزن"
+
+msgid "The inventory module is in use"
+msgstr "وحدة المخزن مستخدمة حاليًا"
+
+msgid ""
+"The inventory module is currently open for user <b>%(holder_name)s</b>. It "
+"becomes available again after %(mins)s minute(s) of inactivity, or when they"
+" exit."
+msgstr ""
+"وحدة المخزن مفتوحة حاليًا للمستخدم <b>%(holder_name)s</b>. هتتاح تاني بعد "
+"%(mins)s دقيقة من الخمول، أو لما يخرج منها."
+
+msgid "Stock levels"
+msgstr "أرصدة المخزن"
+
+msgid "Item card"
+msgstr "كارت الصنف"
+
+msgid "Exit inventory"
+msgstr "الخروج من المخزن"
+
+msgid "Release lock"
+msgstr "فك القفل"
+
+msgid "All warehouses"
+msgstr "كل المخازن"
+
+msgid "Search"
+msgstr "بحث"
+
+msgid "Show"
+msgstr "عرض"
+
+msgid "Average cost"
+msgstr "متوسط التكلفة"
+
+msgid "Stock value"
+msgstr "قيمة المخزون"
+
+msgid "No stock"
+msgstr "لا يوجد رصيد"
+
+msgid "Stock value vs the general ledger"
+msgstr "قيمة المخزون مقابل دفتر الأستاذ"
+
+msgid "The inventory account (105) was not found"
+msgstr "حساب المخزون (105) غير موجود"
+
+msgid "Stock records value"
+msgstr "قيمة المخزون في سجلات المخزن"
+
+msgid "General ledger balance (posted)"
+msgstr "رصيد دفتر الأستاذ (المعتمد)"
+
+msgid "General ledger balance (including drafts)"
+msgstr "رصيد دفتر الأستاذ (شامل المسودات)"
+
+msgid ""
+"A difference can come from manual entries on the inventory account or from "
+"rounding. Stock movements create draft entries that the reviewer posts."
+msgstr ""
+"الفرق ممكن يكون من قيود يدوية على حساب المخزون أو من التقريب. حركات المخزن "
+"بتعمل قيود مسودة يعتمدها المراجع."
+
+msgid "Select a product"
+msgstr "اختر صنفًا"
+
+msgid "Select a product to see its movements"
+msgstr "اختر صنفًا لعرض حركاته"
+
+msgid "Document"
+msgstr "المستند"
+
+msgid "In"
+msgstr "وارد"
+
+msgid "Out"
+msgstr "صادر"
+
+msgid "Running quantity"
+msgstr "الكمية التراكمية"
+
+msgid "Running value"
+msgstr "القيمة التراكمية"
+
+msgid "No movements in this period"
+msgstr "لا توجد حركات في هذه الفترة"
+
+msgid "Select a warehouse"
+msgstr "اختر المخزن"
+
+msgid "Load products"
+msgstr "تحميل الأصناف"
+
+msgid ""
+"The book quantity is recorded at the moment you save. Leave a quantity empty"
+" to skip that product."
+msgstr ""
+"الكمية الدفترية بتتسجل لحظة الحفظ. سيب الكمية فاضية لو عايز تتخطى الصنف."
+
+msgid "No products with movements in this warehouse"
+msgstr "لا توجد أصناف لها حركة في هذا المخزن"
+
+msgid "Products counted"
+msgstr "الأصناف المجرودة"
+
+msgid "Products with differences"
+msgstr "أصناف بها فروق"
+
+msgid "Back to counts"
+msgstr "الرجوع للجرد"
+
+#: accounting/services.py:34
+msgid "Line %(n)s: %(message)s"
+msgstr "السطر %(n)s: %(message)s"
+
+#: accounting/services.py:94
+msgid "Posted entries cannot be changed"
+msgstr "لا يمكن تعديل القيود المرحّلة"
+
+#: accounting/services.py:97
+msgid ""
+"This entry was created by another document. Change that document instead."
+msgstr "هذا القيد أنشأه مستند آخر. عدّل ذلك المستند بدلًا من ذلك."
+
+#: accounting/services.py:42
+msgid "the account belongs to another company"
+msgstr "الحساب يخص شركة أخرى"
+
+#: accounting/services.py:44
+msgid "the customer/supplier belongs to another company"
+msgstr "العميل/المورد يخص شركة أخرى"
+
+#: accounting/services.py:46
+msgid "amounts must be positive"
+msgstr "يجب أن تكون المبالغ موجبة"
+
+#: accounting/services.py:48
+msgid "amounts have at most two decimal places"
+msgstr "المبالغ بحد أقصى خانتان عشريتان"
+
+#: accounting/services.py:50
+msgid "a line must be either debit or credit, not both"
+msgstr "السطر إما مدين أو دائن وليس الاثنين"
+
+#: accounting/services.py:52
+msgid "a line must have a value"
+msgstr "يجب أن يحتوي السطر على مبلغ"
+
+#: accounting/services.py:54
+msgid "you cannot post entries to a parent account"
+msgstr "لا يمكن الترحيل إلى حساب رئيسي"
+
+#: accounting/services.py:58
+msgid "select the customer/supplier for the account (%(account)s)"
+msgstr "اختر العميل/المورد للحساب (%(account)s)"
+
+#: accounting/models.py:113
+msgid "Source"
+msgstr "المصدر"
+
+#: accounting/models.py:115
+msgid "Posted at"
+msgstr "تاريخ الترحيل"
+
+#: accounting/models.py:122
+msgid "Posted by"
+msgstr "رحّله"
+
+#: accounting/models.py:149
+msgid "Posted entries cannot be deleted"
+msgstr "لا يمكن حذف القيود المرحّلة"
+
+#: accounting/models.py:199
+msgid "Lines of a posted entry cannot be changed"
+msgstr "لا يمكن تعديل أسطر قيد مرحّل"
+
+#: accounting/models.py:204
+msgid "Lines of a posted entry cannot be deleted"
+msgstr "لا يمكن حذف أسطر قيد مرحّل"
+
+#: accounting/models.py:62
+msgid "An account cannot be its own parent"
+msgstr "لا يمكن أن يكون الحساب أبًا لنفسه"
+
+#: accounting/models.py:64
+msgid "The parent account belongs to another company"
+msgstr "الحساب الرئيسي يخص شركة أخرى"
+
+#: accounting/models.py:66
+msgid "The parent must be a non-leaf account"
+msgstr "يجب أن يكون الحساب الرئيسي غير نهائي"
+
+#: inventory/services.py:74
+msgid "Select an active warehouse"
+msgstr "اختر مخزنًا نشطًا"
+
+#: inventory/services.py:91
+msgid "The inventory accounts (105, 210) are missing for this company"
+msgstr "حسابات المخزون (105، 210) غير موجودة لهذه الشركة"
+
+#: inventory/services.py:144
+msgid "Select an active supplier of this company"
+msgstr "اختر موردًا نشطًا من هذه الشركة"
+
+#: inventory/services.py:62
+msgid ""
+"Line %(n)s: the quantity must be at least %(min)s with up to 3 decimal "
+"places"
+msgstr "السطر %(n)s: الكمية %(min)s على الأقل وبحد أقصى 3 خانات عشرية"
+
+#: inventory/services.py:69
+msgid "Line %(n)s: select an active product"
+msgstr "السطر %(n)s: اختر صنفًا نشطًا"
+
+#: inventory/services.py:152
+msgid ""
+"Line %(n)s: the unit cost cannot be negative and has up to 4 decimal places"
+msgstr "السطر %(n)s: تكلفة الوحدة لا تكون سالبة وبحد أقصى 4 خانات عشرية"
+
+#: inventory/services.py:358
+msgid "Line %(n)s: the product is repeated"
+msgstr "السطر %(n)s: الصنف مكرر"
+
+#: treasury/services.py:58
+msgid "The treasury accounts are missing for this company: %(codes)s"
+msgstr "حسابات الخزينة غير موجودة لهذه الشركة: %(codes)s"
+
+#: treasury/services.py:82
+msgid "The amount must be at least 0.01 with two decimal places"
+msgstr "المبلغ 0.01 على الأقل وبخانتين عشريتين"
+
+#: treasury/services.py:112
+msgid "Unknown operation"
+msgstr "عملية غير معروفة"
+
+#: treasury/services.py:80
+msgid "Enter a valid amount"
+msgstr "أدخل مبلغًا صحيحًا"
+
+#: treasury/services.py:122
+msgid "Select an active customer/supplier of this company"
+msgstr "اختر عميلًا/موردًا نشطًا من هذه الشركة"
+
+#: treasury/services.py:138
+msgid "Select a leaf expense account"
+msgstr "اختر حساب مصروفات نهائي"
+
+#: treasury/services.py:184
+msgid "Unknown denomination %(den)s"
+msgstr "فئة غير معروفة %(den)s"
+
+#: core/users_api.py:52
+msgid "This username is already taken"
+msgstr "اسم المستخدم مستخدم بالفعل"
+
+#: core/users_api.py:83
+msgid "You cannot change or remove your own access"
+msgstr "لا يمكنك تغيير أو إزالة صلاحيتك أنت"
+
+#: core/users_api.py:115
+msgid ""
+"This user also has access elsewhere; their password cannot be reset here"
+msgstr ""
+"لهذا المستخدم صلاحية في شركة أخرى؛ لا يمكن إعادة تعيين كلمة مروره من هنا"
+
+#: core/api.py:34
+msgid "You do not have access to any company"
+msgstr "لا تملك صلاحية على أي شركة"
+
+#: core/api.py:31
+msgid "You do not have access to this company"
+msgstr "لا تملك صلاحية على هذه الشركة"
+
+#: core/api.py:36
+msgid "%(header)s header is required"
+msgstr "الترويسة %(header)s مطلوبة"
+
+#: core/api.py:28
+msgid "%(header)s must be a number"
+msgstr "الترويسة %(header)s يجب أن تكون رقمًا"
+
+#: core/api.py:95
+msgid "This record is used elsewhere and cannot be deleted"
+msgstr "هذا السجل مستخدم في مكان آخر ولا يمكن حذفه"
+
+#: core/views.py:100
+msgid "Wrong username or password"
+msgstr "اسم المستخدم أو كلمة المرور غير صحيحة"
+
+#: accounting/serializers.py:31
+msgid "An account with this code already exists"
+msgstr "يوجد حساب بهذا الكود بالفعل"
+
+#: accounting/serializers.py:44
+msgid "An account with sub-accounts cannot accept entries"
+msgstr "الحساب الذي له حسابات فرعية لا يقبل قيودًا"
+
+#: accounting/serializers.py:48
+msgid "An account that already has entries must stay a leaf"
+msgstr "الحساب الذي عليه قيود يجب أن يبقى نهائيًا"
+
+#: accounting/api.py:196
+msgid "The end date is before the start date"
+msgstr "تاريخ النهاية قبل تاريخ البداية"
+
+#: inventory/serializers.py:31
+msgid "A unit with this name already exists"
+msgstr "توجد وحدة بهذا الاسم بالفعل"
+
+#: inventory/serializers.py:45
+msgid "A warehouse with this code already exists"
+msgstr "يوجد مخزن بهذا الكود بالفعل"
+
+#: inventory/serializers.py:73
+msgid "A product with this code already exists"
+msgstr "يوجد صنف بهذا الكود بالفعل"
+
+#: inventory/serializers.py:70
+msgid "Cannot be changed once the product has stock movements"
+msgstr "لا يمكن تغييره بعد أن أصبح للصنف حركات مخزون"
+
+#: treasury/api.py:74
+msgid "You are not allowed to post entries"
+msgstr "لا تملك صلاحية ترحيل القيود"
+
+#: treasury/api.py:115
+msgid "You are not allowed to create adjustment entries"
+msgstr "لا تملك صلاحية إنشاء قيود التسوية"

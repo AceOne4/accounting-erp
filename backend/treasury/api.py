@@ -1,5 +1,6 @@
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
+from django.utils.translation import gettext as _
 from rest_framework import mixins, status, viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
@@ -70,7 +71,7 @@ class VoucherView(CapabilityMixin, APIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         if data["post_now"] and not _can(request, "journal.post"):
-            raise PermissionDenied("You are not allowed to post entries")
+            raise PermissionDenied(_("You are not allowed to post entries"))
         entry, posted, post_error = services.create_voucher(
             company=request.company,
             user=request.user,
@@ -111,7 +112,7 @@ class CashCountViewSet(
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         if data["adjust"] and not _can(request, "journal.create"):
-            raise PermissionDenied("You are not allowed to create adjustment entries")
+            raise PermissionDenied(_("You are not allowed to create adjustment entries"))
         count = services.record_cash_count(
             company=request.company,
             user=request.user,

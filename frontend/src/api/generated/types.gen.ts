@@ -6,25 +6,31 @@ export type ClientOptions = {
 
 export type Account = {
     readonly id: number;
+    /**
+     * الكود
+     */
     code: string;
     /**
-     * Account name
+     * اسم الحساب
      */
     name: string;
     /**
-     * Account name (English)
+     * اسم الحساب (بالإنجليزية)
      */
     name_en?: string;
+    /**
+     * النوع
+     */
     type: TypeEnum;
     parent?: number | null;
     /**
-     * Leaf account (accepts entries)
+     * حساب فرعي (يقبل قيود)
      */
     is_leaf?: boolean;
     /**
-     * Requires customer/supplier
+     * يتطلب تحديد عميل/مورد
      *
-     * Enable for receivable and payable accounts
+     * فعّلها لحسابات العملاء والموردين
      */
     requires_partner?: boolean;
 };
@@ -37,25 +43,31 @@ export type AccountBrief = {
 };
 
 export type AccountRequest = {
+    /**
+     * الكود
+     */
     code: string;
     /**
-     * Account name
+     * اسم الحساب
      */
     name: string;
     /**
-     * Account name (English)
+     * اسم الحساب (بالإنجليزية)
      */
     name_en?: string;
+    /**
+     * النوع
+     */
     type: TypeEnum;
     parent?: number | null;
     /**
-     * Leaf account (accepts entries)
+     * حساب فرعي (يقبل قيود)
      */
     is_leaf?: boolean;
     /**
-     * Requires customer/supplier
+     * يتطلب تحديد عميل/مورد
      *
-     * Enable for receivable and payable accounts
+     * فعّلها لحسابات العملاء والموردين
      */
     requires_partner?: boolean;
 };
@@ -80,14 +92,29 @@ export type CashCount = {
     readonly id: number;
     readonly box: number;
     readonly box_code: string;
+    /**
+     * تاريخ الجرد
+     */
     readonly count_date: string;
     /**
-     * Counted cash
+     * النقدية بالجرد
      */
     readonly counted_total: string;
+    /**
+     * الرصيد الدفتري
+     */
     readonly book_balance: string;
+    /**
+     * الفرق
+     */
     readonly difference: string;
+    /**
+     * تفصيل الفئات
+     */
     readonly breakdown: unknown;
+    /**
+     * ملاحظات
+     */
     readonly notes: string;
     readonly counted_by: string;
     readonly entry: number;
@@ -177,16 +204,35 @@ export type ItemCardRow = {
 
 export type JournalEntry = {
     readonly id: number;
+    /**
+     * التاريخ
+     */
     date: string;
+    /**
+     * البيان
+     */
     description: string;
+    /**
+     * الحالة
+     */
     status: StatusEnum;
     /**
-     * AI generated
+     * مُنشأ بالذكاء الاصطناعي
      */
     readonly is_ai_generated: boolean;
+    /**
+     * المصدر
+     */
+    readonly source: string;
     readonly created_by: string;
+    /**
+     * تاريخ الإنشاء
+     */
     readonly created_at: string;
     readonly posted_by: string;
+    /**
+     * تاريخ الترحيل
+     */
     readonly posted_at: string | null;
     readonly total_debit: string;
     readonly total_credit: string;
@@ -195,7 +241,13 @@ export type JournalEntry = {
 };
 
 export type JournalEntryRequest = {
+    /**
+     * التاريخ
+     */
     date: string;
+    /**
+     * البيان
+     */
     description: string;
     lines: Array<JournalLineRequest>;
 };
@@ -207,7 +259,7 @@ export type JournalLine = {
     debit?: string;
     credit?: string;
     /**
-     * Notes
+     * ملاحظات
      */
     memo?: string;
 };
@@ -218,7 +270,7 @@ export type JournalLineRequest = {
     debit?: string;
     credit?: string;
     /**
-     * Notes
+     * ملاحظات
      */
     memo?: string;
 };
@@ -268,6 +320,20 @@ export type Me = {
     username: string;
 };
 
+export type Member = {
+    readonly id: number;
+    readonly username: string;
+    readonly first_name: string;
+    role: RoleEnum;
+    readonly is_active: boolean;
+};
+
+export type MemberCreateRequest = {
+    username: string;
+    first_name?: string;
+    role: RoleEnum;
+};
+
 export type PaginatedCashCountList = {
     count: number;
     next?: string | null;
@@ -312,15 +378,24 @@ export type PaginatedTransferList = {
 
 export type Partner = {
     readonly id: number;
+    /**
+     * الاسم
+     */
     name: string;
     /**
-     * Type
+     * النوع
      */
     kind: PartnerKindEnum;
+    /**
+     * الرقم الضريبي
+     */
     tax_id?: string;
+    /**
+     * التليفون
+     */
     phone?: string;
     /**
-     * Active
+     * نشط
      */
     is_active?: boolean;
 };
@@ -331,22 +406,31 @@ export type PartnerBrief = {
 };
 
 /**
- * * `customer` - Customer
- * * `supplier` - Supplier
- * * `both` - Customer and supplier
+ * * `customer` - عميل
+ * * `supplier` - مورد
+ * * `both` - عميل ومورد
  */
 export type PartnerKindEnum = 'customer' | 'supplier' | 'both';
 
 export type PartnerRequest = {
+    /**
+     * الاسم
+     */
     name: string;
     /**
-     * Type
+     * النوع
      */
     kind: PartnerKindEnum;
+    /**
+     * الرقم الضريبي
+     */
     tax_id?: string;
+    /**
+     * التليفون
+     */
     phone?: string;
     /**
-     * Active
+     * نشط
      */
     is_active?: boolean;
 };
@@ -367,53 +451,75 @@ export type PartnerStatement = {
     incomplete_entries: number;
 };
 
+export type PasswordRequest = {
+    password: string;
+};
+
 export type Product = {
     readonly id: number;
+    /**
+     * الكود
+     */
     code: string;
+    /**
+     * الاسم
+     */
     name: string;
     /**
-     * Name (English)
+     * الاسم (بالإنجليزية)
      */
     name_en?: string;
+    /**
+     * البيان
+     */
     description?: string;
     unit: number;
     /**
-     * VAT exempt
+     * معفي من الضريبة
      */
     tax_exempt?: boolean;
     /**
-     * VAT rate %
+     * نسبة الضريبة %
      *
-     * Leave blank to use the default rate
+     * اتركها فارغة لاستخدام النسبة الافتراضية
      */
     tax_rate?: string | null;
     /**
-     * Active
+     * نشط
      */
     is_active?: boolean;
 };
 
 export type ProductRequest = {
+    /**
+     * الكود
+     */
     code: string;
+    /**
+     * الاسم
+     */
     name: string;
     /**
-     * Name (English)
+     * الاسم (بالإنجليزية)
      */
     name_en?: string;
+    /**
+     * البيان
+     */
     description?: string;
     unit: number;
     /**
-     * VAT exempt
+     * معفي من الضريبة
      */
     tax_exempt?: boolean;
     /**
-     * VAT rate %
+     * نسبة الضريبة %
      *
-     * Leave blank to use the default rate
+     * اتركها فارغة لاستخدام النسبة الافتراضية
      */
     tax_rate?: string | null;
     /**
-     * Active
+     * نشط
      */
     is_active?: boolean;
 };
@@ -466,6 +572,18 @@ export type RecentEntry = {
 };
 
 /**
+ * * `accountant` - Accountant
+ * * `reviewer` - Reviewer
+ * * `chief_accountant` - Chief accountant
+ * * `system_admin` - System admin
+ */
+export type RoleEnum = 'accountant' | 'reviewer' | 'chief_accountant' | 'system_admin';
+
+export type RoleRequest = {
+    role: RoleEnum;
+};
+
+/**
  * * `debit` - debit
  * * `credit` - credit
  * * `` -
@@ -492,8 +610,8 @@ export type StatementRow = {
 };
 
 /**
- * * `draft` - Draft
- * * `posted` - Posted
+ * * `draft` - مسودة
+ * * `posted` - معتمد
  */
 export type StatusEnum = 'draft' | 'posted';
 
@@ -514,6 +632,10 @@ export type StockLevels = {
     total_value: string;
     stock_total: string;
     ledger: LedgerComparison | null;
+};
+
+export type TokenResponse = {
+    token: string;
 };
 
 export type Transfer = {
@@ -575,27 +697,33 @@ export type TrialBalanceRow = {
 };
 
 /**
- * * `asset` - Assets
- * * `liability` - Liabilities
- * * `equity` - Equity
- * * `revenue` - Revenue
- * * `expense` - Expenses
+ * * `asset` - أصول
+ * * `liability` - التزامات
+ * * `equity` - حقوق ملكية
+ * * `revenue` - إيرادات
+ * * `expense` - مصروفات
  */
 export type TypeEnum = 'asset' | 'liability' | 'equity' | 'revenue' | 'expense';
 
 export type Unit = {
     readonly id: number;
+    /**
+     * الاسم
+     */
     name: string;
     /**
-     * Name (English)
+     * الاسم (بالإنجليزية)
      */
     name_en?: string;
 };
 
 export type UnitRequest = {
+    /**
+     * الاسم
+     */
     name: string;
     /**
-     * Name (English)
+     * الاسم (بالإنجليزية)
      */
     name_en?: string;
 };
@@ -629,51 +757,69 @@ export type VoucherResult = {
 
 export type Warehouse = {
     readonly id: number;
+    /**
+     * الكود
+     */
     code: string;
+    /**
+     * الاسم
+     */
     name: string;
     /**
-     * Name (English)
+     * الاسم (بالإنجليزية)
      */
     name_en?: string;
     /**
-     * Active
+     * نشط
      */
     is_active?: boolean;
 };
 
 export type WarehouseRequest = {
+    /**
+     * الكود
+     */
     code: string;
+    /**
+     * الاسم
+     */
     name: string;
     /**
-     * Name (English)
+     * الاسم (بالإنجليزية)
      */
     name_en?: string;
     /**
-     * Active
+     * نشط
      */
     is_active?: boolean;
 };
 
 export type AccountWritable = {
+    /**
+     * الكود
+     */
     code: string;
     /**
-     * Account name
+     * اسم الحساب
      */
     name: string;
     /**
-     * Account name (English)
+     * اسم الحساب (بالإنجليزية)
      */
     name_en?: string;
+    /**
+     * النوع
+     */
     type: TypeEnum;
     parent?: number | null;
     /**
-     * Leaf account (accepts entries)
+     * حساب فرعي (يقبل قيود)
      */
     is_leaf?: boolean;
     /**
-     * Requires customer/supplier
+     * يتطلب تحديد عميل/مورد
      *
-     * Enable for receivable and payable accounts
+     * فعّلها لحسابات العملاء والموردين
      */
     requires_partner?: boolean;
 };
@@ -689,7 +835,13 @@ export type CountLineWritable = {
 };
 
 export type JournalEntryWritable = {
+    /**
+     * التاريخ
+     */
     date: string;
+    /**
+     * البيان
+     */
     description: string;
     lines: Array<JournalLineWritable>;
 };
@@ -700,7 +852,7 @@ export type JournalLineWritable = {
     debit?: string;
     credit?: string;
     /**
-     * Notes
+     * ملاحظات
      */
     memo?: string;
 };
@@ -708,6 +860,17 @@ export type JournalLineWritable = {
 export type LoginRequestWritable = {
     username: string;
     password: string;
+};
+
+export type MemberWritable = {
+    role: RoleEnum;
+};
+
+export type MemberCreateRequestWritable = {
+    username: string;
+    first_name?: string;
+    password: string;
+    role: RoleEnum;
 };
 
 export type PaginatedCashCountListWritable = {
@@ -753,40 +916,58 @@ export type PaginatedTransferListWritable = {
 };
 
 export type PartnerWritable = {
+    /**
+     * الاسم
+     */
     name: string;
     /**
-     * Type
+     * النوع
      */
     kind: PartnerKindEnum;
+    /**
+     * الرقم الضريبي
+     */
     tax_id?: string;
+    /**
+     * التليفون
+     */
     phone?: string;
     /**
-     * Active
+     * نشط
      */
     is_active?: boolean;
 };
 
 export type ProductWritable = {
+    /**
+     * الكود
+     */
     code: string;
+    /**
+     * الاسم
+     */
     name: string;
     /**
-     * Name (English)
+     * الاسم (بالإنجليزية)
      */
     name_en?: string;
+    /**
+     * البيان
+     */
     description?: string;
     unit: number;
     /**
-     * VAT exempt
+     * معفي من الضريبة
      */
     tax_exempt?: boolean;
     /**
-     * VAT rate %
+     * نسبة الضريبة %
      *
-     * Leave blank to use the default rate
+     * اتركها فارغة لاستخدام النسبة الافتراضية
      */
     tax_rate?: string | null;
     /**
-     * Active
+     * نشط
      */
     is_active?: boolean;
 };
@@ -820,22 +1001,31 @@ export type TransferLineWritable = {
 };
 
 export type UnitWritable = {
+    /**
+     * الاسم
+     */
     name: string;
     /**
-     * Name (English)
+     * الاسم (بالإنجليزية)
      */
     name_en?: string;
 };
 
 export type WarehouseWritable = {
+    /**
+     * الكود
+     */
     code: string;
+    /**
+     * الاسم
+     */
     name: string;
     /**
-     * Name (English)
+     * الاسم (بالإنجليزية)
      */
     name_en?: string;
     /**
-     * Active
+     * نشط
      */
     is_active?: boolean;
 };
@@ -888,7 +1078,7 @@ export type V1AccountsRetrieveData = {
     };
     path: {
         /**
-         * نوع رقم صحيح فريد يحدد هذا Account.
+         * نوع رقم صحيح فريد يحدد هذا الحساب.
          */
         id: number;
     };
@@ -912,7 +1102,7 @@ export type V1AccountsUpdateData = {
     };
     path: {
         /**
-         * نوع رقم صحيح فريد يحدد هذا Account.
+         * نوع رقم صحيح فريد يحدد هذا الحساب.
          */
         id: number;
     };
@@ -985,6 +1175,47 @@ export type V1AuthLogoutCreateResponses = {
 };
 
 export type V1AuthLogoutCreateResponse = V1AuthLogoutCreateResponses[keyof V1AuthLogoutCreateResponses];
+
+export type V1AuthTokenCreateData = {
+    body: LoginRequestWritable;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/token/';
+};
+
+export type V1AuthTokenCreateResponses = {
+    200: TokenResponse;
+};
+
+export type V1AuthTokenCreateResponse = V1AuthTokenCreateResponses[keyof V1AuthTokenCreateResponses];
+
+export type V1AuthTokenRevokeCreateData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/auth/token/revoke/';
+};
+
+export type V1AuthTokenRevokeCreateResponses = {
+    /**
+     * No response body
+     */
+    204: void;
+};
+
+export type V1AuthTokenRevokeCreateResponse = V1AuthTokenRevokeCreateResponses[keyof V1AuthTokenRevokeCreateResponses];
 
 export type V1HealthRetrieveData = {
     body?: never;
@@ -1137,6 +1368,10 @@ export type V1InventoryProductsListData = {
          * رقم الصفحة ضمن النتائج المقسمة.
          */
         page?: number;
+        /**
+         * عدد النتائج التي يجب إرجاعها في كل صفحة.
+         */
+        page_size?: number;
     };
     url: '/api/v1/inventory/products/';
 };
@@ -1733,7 +1968,7 @@ export type V1JournalEntriesDestroyData = {
     };
     path: {
         /**
-         * نوع رقم صحيح فريد يحدد هذا Journal entry.
+         * نوع رقم صحيح فريد يحدد هذا قيد يومية.
          */
         id: number;
     };
@@ -1760,7 +1995,7 @@ export type V1JournalEntriesRetrieveData = {
     };
     path: {
         /**
-         * نوع رقم صحيح فريد يحدد هذا Journal entry.
+         * نوع رقم صحيح فريد يحدد هذا قيد يومية.
          */
         id: number;
     };
@@ -1784,7 +2019,7 @@ export type V1JournalEntriesUpdateData = {
     };
     path: {
         /**
-         * نوع رقم صحيح فريد يحدد هذا Journal entry.
+         * نوع رقم صحيح فريد يحدد هذا قيد يومية.
          */
         id: number;
     };
@@ -1808,7 +2043,7 @@ export type V1JournalEntriesPostCreateData = {
     };
     path: {
         /**
-         * نوع رقم صحيح فريد يحدد هذا Journal entry.
+         * نوع رقم صحيح فريد يحدد هذا قيد يومية.
          */
         id: number;
     };
@@ -1883,7 +2118,7 @@ export type V1PartnersDestroyData = {
     };
     path: {
         /**
-         * نوع رقم صحيح فريد يحدد هذا Customer / Supplier.
+         * نوع رقم صحيح فريد يحدد هذا العميل / المورد.
          */
         id: number;
     };
@@ -1910,7 +2145,7 @@ export type V1PartnersRetrieveData = {
     };
     path: {
         /**
-         * نوع رقم صحيح فريد يحدد هذا Customer / Supplier.
+         * نوع رقم صحيح فريد يحدد هذا العميل / المورد.
          */
         id: number;
     };
@@ -1934,7 +2169,7 @@ export type V1PartnersUpdateData = {
     };
     path: {
         /**
-         * نوع رقم صحيح فريد يحدد هذا Customer / Supplier.
+         * نوع رقم صحيح فريد يحدد هذا العميل / المورد.
          */
         id: number;
     };
@@ -2080,7 +2315,7 @@ export type V1TreasuryCashCountsRetrieveData = {
     };
     path: {
         /**
-         * نوع رقم صحيح فريد يحدد هذا Cash count.
+         * نوع رقم صحيح فريد يحدد هذا جرد الخزينة.
          */
         id: number;
     };
@@ -2131,3 +2366,119 @@ export type V1TreasuryVouchersCreateResponses = {
 };
 
 export type V1TreasuryVouchersCreateResponse = V1TreasuryVouchersCreateResponses[keyof V1TreasuryVouchersCreateResponses];
+
+export type V1UsersListData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/';
+};
+
+export type V1UsersListResponses = {
+    200: Array<Member>;
+};
+
+export type V1UsersListResponse = V1UsersListResponses[keyof V1UsersListResponses];
+
+export type V1UsersCreateData = {
+    body: MemberCreateRequestWritable;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/';
+};
+
+export type V1UsersCreateResponses = {
+    201: Member;
+};
+
+export type V1UsersCreateResponse = V1UsersCreateResponses[keyof V1UsersCreateResponses];
+
+export type V1UsersDestroyData = {
+    body?: never;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا membership.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/users/{id}/';
+};
+
+export type V1UsersDestroyResponses = {
+    /**
+     * No response body
+     */
+    204: void;
+};
+
+export type V1UsersDestroyResponse = V1UsersDestroyResponses[keyof V1UsersDestroyResponses];
+
+export type V1UsersPasswordCreateData = {
+    body: PasswordRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا membership.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/users/{id}/password/';
+};
+
+export type V1UsersPasswordCreateResponses = {
+    /**
+     * No response body
+     */
+    204: void;
+};
+
+export type V1UsersPasswordCreateResponse = V1UsersPasswordCreateResponses[keyof V1UsersPasswordCreateResponses];
+
+export type V1UsersRoleCreateData = {
+    body: RoleRequest;
+    headers?: {
+        /**
+         * Company to act in. Optional when the user belongs to exactly one.
+         */
+        'X-Company-Id'?: number;
+    };
+    path: {
+        /**
+         * نوع رقم صحيح فريد يحدد هذا membership.
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/api/v1/users/{id}/role/';
+};
+
+export type V1UsersRoleCreateResponses = {
+    200: Member;
+};
+
+export type V1UsersRoleCreateResponse = V1UsersRoleCreateResponses[keyof V1UsersRoleCreateResponses];

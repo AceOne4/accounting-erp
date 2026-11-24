@@ -194,7 +194,7 @@ def _sync_receipt_entry(receipt, total):
         if entry:
             StockReceipt.objects.filter(pk=receipt.pk).update(journal_entry=None)
             receipt.journal_entry = None
-            accounting.delete_entry(entry=entry)
+            accounting.delete_entry(entry=entry, allow_linked=True)
         return
 
     description = ("%s %s - %s" % (_("Goods receipt"), receipt.number, receipt.supplier.name))[:500]
@@ -205,12 +205,14 @@ def _sync_receipt_entry(receipt, total):
     if entry is None:
         entry = accounting.create_entry(
             company=company, user=receipt.created_by, date=receipt.date,
-            description=description, lines=lines,
+            description=description, lines=lines, source="receipt",
         )
         StockReceipt.objects.filter(pk=receipt.pk).update(journal_entry=entry)
         receipt.journal_entry = entry
     else:
-        accounting.update_entry(entry=entry, date=receipt.date, description=description, lines=lines)
+        accounting.update_entry(
+            entry=entry, date=receipt.date, description=description, lines=lines, allow_linked=True
+        )
 
 
 @transaction.atomic
@@ -256,7 +258,7 @@ def delete_receipt(*, receipt):
     StockLayer.objects.filter(receipt_line__receipt=receipt).delete()
     receipt.delete()
     if entry:
-        accounting.delete_entry(entry=entry)
+        accounting.delete_entry(entry=entry, allow_linked=True)
 
 
 # -------------------------------------------------------------- transfers

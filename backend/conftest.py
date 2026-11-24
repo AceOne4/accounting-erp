@@ -7,6 +7,15 @@ from accounting.models import Account, Partner
 from core.models import Company, Membership
 
 
+@pytest.fixture(autouse=True)
+def english_by_default():
+    """Production defaults to Arabic; tests assert on English text unless they switch language."""
+    from django.utils import translation
+
+    with translation.override("en"):
+        yield
+
+
 @pytest.fixture
 def company(db):
     company = Company.objects.create(name="Nile Trading")
@@ -35,6 +44,7 @@ def make_user(db):
 def client_for():
     def make(user, company=None):
         client = APIClient()
+        client.defaults["HTTP_ACCEPT_LANGUAGE"] = "en"
         client.force_login(user)
         if company is not None:
             client.defaults["HTTP_X_COMPANY_ID"] = str(company.pk)

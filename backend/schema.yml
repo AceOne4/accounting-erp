@@ -12,6 +12,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -49,6 +50,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -74,7 +76,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: نوع رقم صحيح فريد يحدد هذا Account.
+        description: نوع رقم صحيح فريد يحدد هذا الحساب.
         required: true
       - name: X-Company-Id
         in: header
@@ -87,6 +89,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -103,7 +106,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: نوع رقم صحيح فريد يحدد هذا Account.
+        description: نوع رقم صحيح فريد يحدد هذا الحساب.
         required: true
       - name: X-Company-Id
         in: header
@@ -128,6 +131,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -197,6 +201,61 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/auth/token/:
+    post:
+      operationId: v1_auth_token_create
+      description: |-
+        POST: exchange username + password for an API token (for the mobile app).
+        Send it as `Authorization: Token <key>`; no CSRF is needed for token requests.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/auth/token/revoke/:
+    post:
+      operationId: v1_auth_token_revoke_create
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
       responses:
         '204':
           description: No response body
@@ -241,6 +300,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -266,6 +326,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -302,6 +363,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -317,6 +379,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -340,6 +403,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -364,6 +428,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -391,6 +456,12 @@ paths:
         description: رقم الصفحة ضمن النتائج المقسمة.
         schema:
           type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: عدد النتائج التي يجب إرجاعها في كل صفحة.
+        schema:
+          type: integer
       - name: X-Company-Id
         in: header
         required: false
@@ -402,6 +473,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -429,6 +501,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -467,6 +540,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -508,6 +582,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -537,6 +612,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '204':
           description: No response body
@@ -561,6 +637,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -586,6 +663,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -622,6 +700,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -661,6 +740,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -688,6 +768,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '204':
           description: No response body
@@ -728,6 +809,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -761,6 +843,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -789,6 +872,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -814,6 +898,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -850,6 +935,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -877,6 +963,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '204':
           description: No response body
@@ -889,6 +976,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -926,6 +1014,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -964,6 +1053,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1005,6 +1095,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1021,6 +1112,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1058,6 +1150,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -1096,6 +1189,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1137,6 +1231,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1197,6 +1292,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1224,6 +1320,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -1249,7 +1346,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: نوع رقم صحيح فريد يحدد هذا Journal entry.
+        description: نوع رقم صحيح فريد يحدد هذا قيد يومية.
         required: true
       - name: X-Company-Id
         in: header
@@ -1262,6 +1359,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1278,7 +1376,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: نوع رقم صحيح فريد يحدد هذا Journal entry.
+        description: نوع رقم صحيح فريد يحدد هذا قيد يومية.
         required: true
       - name: X-Company-Id
         in: header
@@ -1303,6 +1401,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1319,7 +1418,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: نوع رقم صحيح فريد يحدد هذا Journal entry.
+        description: نوع رقم صحيح فريد يحدد هذا قيد يومية.
         required: true
       - name: X-Company-Id
         in: header
@@ -1332,6 +1431,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '204':
           description: No response body
@@ -1345,7 +1445,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: نوع رقم صحيح فريد يحدد هذا Journal entry.
+        description: نوع رقم صحيح فريد يحدد هذا قيد يومية.
         required: true
       - name: X-Company-Id
         in: header
@@ -1358,6 +1458,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1372,6 +1473,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1388,6 +1490,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1425,6 +1528,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -1450,7 +1554,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: نوع رقم صحيح فريد يحدد هذا Customer / Supplier.
+        description: نوع رقم صحيح فريد يحدد هذا العميل / المورد.
         required: true
       - name: X-Company-Id
         in: header
@@ -1463,6 +1567,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1479,7 +1584,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: نوع رقم صحيح فريد يحدد هذا Customer / Supplier.
+        description: نوع رقم صحيح فريد يحدد هذا العميل / المورد.
         required: true
       - name: X-Company-Id
         in: header
@@ -1504,6 +1609,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1520,7 +1626,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: نوع رقم صحيح فريد يحدد هذا Customer / Supplier.
+        description: نوع رقم صحيح فريد يحدد هذا العميل / المورد.
         required: true
       - name: X-Company-Id
         in: header
@@ -1533,6 +1639,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '204':
           description: No response body
@@ -1581,6 +1688,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1634,6 +1742,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1663,6 +1772,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1693,6 +1803,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1720,6 +1831,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -1745,7 +1857,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: نوع رقم صحيح فريد يحدد هذا Cash count.
+        description: نوع رقم صحيح فريد يحدد هذا جرد الخزينة.
         required: true
       - name: X-Company-Id
         in: header
@@ -1758,6 +1870,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1774,6 +1887,7 @@ paths:
       - v1
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '200':
           content:
@@ -1810,6 +1924,7 @@ paths:
         required: true
       security:
       - cookieAuth: []
+      - tokenAuth: []
       responses:
         '201':
           content:
@@ -1825,6 +1940,178 @@ paths:
           type: integer
         description: Company to act in. Optional when the user belongs to exactly
           one.
+  /api/v1/users/:
+    get:
+      operationId: v1_users_list
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Member'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+    post:
+      operationId: v1_users_create
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MemberCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MemberCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MemberCreateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+          description: ''
+      parameters:
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+  /api/v1/users/{id}/:
+    delete:
+      operationId: v1_users_destroy
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا membership.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/users/{id}/password/:
+    post:
+      operationId: v1_users_password_create
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا membership.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/users/{id}/role/:
+    post:
+      operationId: v1_users_role_create
+      description: Add to views. Set `capability` (APIView) or `capability_by_action`
+        (ViewSet).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: نوع رقم صحيح فريد يحدد هذا membership.
+        required: true
+      - name: X-Company-Id
+        in: header
+        required: false
+        schema:
+          type: integer
+        description: Company to act in. Optional when the user belongs to exactly
+          one.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RoleRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RoleRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+          description: ''
 components:
   schemas:
     Account:
@@ -1835,27 +2122,30 @@ components:
           readOnly: true
         code:
           type: string
+          title: الكود
           maxLength: 20
         name:
           type: string
-          title: Account name
+          title: اسم الحساب
           maxLength: 200
         name_en:
           type: string
-          title: Account name (English)
+          title: اسم الحساب (بالإنجليزية)
           maxLength: 200
         type:
-          $ref: '#/components/schemas/TypeEnum'
+          allOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          title: النوع
         parent:
           type: integer
           nullable: true
         is_leaf:
           type: boolean
-          title: Leaf account (accepts entries)
+          title: حساب فرعي (يقبل قيود)
         requires_partner:
           type: boolean
-          title: Requires customer/supplier
-          description: Enable for receivable and payable accounts
+          title: يتطلب تحديد عميل/مورد
+          description: فعّلها لحسابات العملاء والموردين
       required:
       - code
       - id
@@ -1883,28 +2173,31 @@ components:
         code:
           type: string
           minLength: 1
+          title: الكود
           maxLength: 20
         name:
           type: string
           minLength: 1
-          title: Account name
+          title: اسم الحساب
           maxLength: 200
         name_en:
           type: string
-          title: Account name (English)
+          title: اسم الحساب (بالإنجليزية)
           maxLength: 200
         type:
-          $ref: '#/components/schemas/TypeEnum'
+          allOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          title: النوع
         parent:
           type: integer
           nullable: true
         is_leaf:
           type: boolean
-          title: Leaf account (accepts entries)
+          title: حساب فرعي (يقبل قيود)
         requires_partner:
           type: boolean
-          title: Requires customer/supplier
-          description: Enable for receivable and payable accounts
+          title: يتطلب تحديد عميل/مورد
+          description: فعّلها لحسابات العملاء والموردين
       required:
       - code
       - name
@@ -1970,27 +2263,32 @@ components:
           type: string
           format: date
           readOnly: true
+          title: تاريخ الجرد
         counted_total:
           type: string
           format: decimal
           pattern: ^-?\d{0,14}(?:\.\d{0,2})?$
           readOnly: true
-          title: Counted cash
+          title: النقدية بالجرد
         book_balance:
           type: string
           format: decimal
           pattern: ^-?\d{0,14}(?:\.\d{0,2})?$
           readOnly: true
+          title: الرصيد الدفتري
         difference:
           type: string
           format: decimal
           pattern: ^-?\d{0,14}(?:\.\d{0,2})?$
           readOnly: true
+          title: الفرق
         breakdown:
           readOnly: true
+          title: تفصيل الفئات
         notes:
           type: string
           readOnly: true
+          title: ملاحظات
         counted_by:
           type: string
           readOnly: true
@@ -2248,17 +2546,24 @@ components:
         date:
           type: string
           format: date
+          title: التاريخ
         description:
           type: string
+          title: البيان
           maxLength: 500
         status:
           allOf:
           - $ref: '#/components/schemas/StatusEnum'
           readOnly: true
+          title: الحالة
         is_ai_generated:
           type: boolean
           readOnly: true
-          title: AI generated
+          title: مُنشأ بالذكاء الاصطناعي
+        source:
+          type: string
+          readOnly: true
+          title: المصدر
         created_by:
           type: string
           readOnly: true
@@ -2266,6 +2571,7 @@ components:
           type: string
           format: date-time
           readOnly: true
+          title: تاريخ الإنشاء
         posted_by:
           type: string
           readOnly: true
@@ -2274,6 +2580,7 @@ components:
           format: date-time
           readOnly: true
           nullable: true
+          title: تاريخ الترحيل
         total_debit:
           type: string
           format: decimal
@@ -2302,6 +2609,7 @@ components:
       - missing_partner_lines
       - posted_at
       - posted_by
+      - source
       - status
       - total_credit
       - total_debit
@@ -2311,9 +2619,11 @@ components:
         date:
           type: string
           format: date
+          title: التاريخ
         description:
           type: string
           minLength: 1
+          title: البيان
           maxLength: 500
         lines:
           type: array
@@ -2346,7 +2656,7 @@ components:
           default: '0.00'
         memo:
           type: string
-          title: Notes
+          title: ملاحظات
           maxLength: 300
       required:
       - account
@@ -2371,7 +2681,7 @@ components:
           default: '0.00'
         memo:
           type: string
-          title: Notes
+          title: ملاحظات
           maxLength: 300
       required:
       - account
@@ -2509,6 +2819,51 @@ components:
           type: string
       required:
       - companies
+      - username
+    Member:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        first_name:
+          type: string
+          readOnly: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        is_active:
+          type: boolean
+          readOnly: true
+      required:
+      - first_name
+      - id
+      - is_active
+      - role
+      - username
+    MemberCreateRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 150
+          pattern: ^[\w.@+-]+$
+        first_name:
+          type: string
+          default: ''
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+      required:
+      - password
+      - role
       - username
     PaginatedCashCountList:
       type: object
@@ -2656,20 +3011,23 @@ components:
           readOnly: true
         name:
           type: string
+          title: الاسم
           maxLength: 200
         kind:
           allOf:
           - $ref: '#/components/schemas/PartnerKindEnum'
-          title: Type
+          title: النوع
         tax_id:
           type: string
+          title: الرقم الضريبي
           maxLength: 30
         phone:
           type: string
+          title: التليفون
           maxLength: 30
         is_active:
           type: boolean
-          title: Active
+          title: نشط
       required:
       - id
       - kind
@@ -2691,29 +3049,32 @@ components:
       - both
       type: string
       description: |-
-        * `customer` - Customer
-        * `supplier` - Supplier
-        * `both` - Customer and supplier
+        * `customer` - عميل
+        * `supplier` - مورد
+        * `both` - عميل ومورد
     PartnerRequest:
       type: object
       properties:
         name:
           type: string
           minLength: 1
+          title: الاسم
           maxLength: 200
         kind:
           allOf:
           - $ref: '#/components/schemas/PartnerKindEnum'
-          title: Type
+          title: النوع
         tax_id:
           type: string
+          title: الرقم الضريبي
           maxLength: 30
         phone:
           type: string
+          title: التليفون
           maxLength: 30
         is_active:
           type: boolean
-          title: Active
+          title: نشط
       required:
       - kind
       - name
@@ -2770,6 +3131,15 @@ components:
       - posted_credit
       - posted_debit
       - rows
+    PasswordRequest:
+      type: object
+      properties:
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
     Product:
       type: object
       properties:
@@ -2778,31 +3148,34 @@ components:
           readOnly: true
         code:
           type: string
+          title: الكود
           maxLength: 50
         name:
           type: string
+          title: الاسم
           maxLength: 200
         name_en:
           type: string
-          title: Name (English)
+          title: الاسم (بالإنجليزية)
           maxLength: 200
         description:
           type: string
+          title: البيان
         unit:
           type: integer
         tax_exempt:
           type: boolean
-          title: VAT exempt
+          title: معفي من الضريبة
         tax_rate:
           type: string
           format: decimal
           pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
           nullable: true
-          title: VAT rate %
-          description: Leave blank to use the default rate
+          title: نسبة الضريبة %
+          description: اتركها فارغة لاستخدام النسبة الافتراضية
         is_active:
           type: boolean
-          title: Active
+          title: نشط
       required:
       - code
       - id
@@ -2814,32 +3187,35 @@ components:
         code:
           type: string
           minLength: 1
+          title: الكود
           maxLength: 50
         name:
           type: string
           minLength: 1
+          title: الاسم
           maxLength: 200
         name_en:
           type: string
-          title: Name (English)
+          title: الاسم (بالإنجليزية)
           maxLength: 200
         description:
           type: string
+          title: البيان
         unit:
           type: integer
         tax_exempt:
           type: boolean
-          title: VAT exempt
+          title: معفي من الضريبة
         tax_rate:
           type: string
           format: decimal
           pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
           nullable: true
-          title: VAT rate %
-          description: Leave blank to use the default rate
+          title: نسبة الضريبة %
+          description: اتركها فارغة لاستخدام النسبة الافتراضية
         is_active:
           type: boolean
-          title: Active
+          title: نشط
       required:
       - code
       - name
@@ -2984,6 +3360,25 @@ components:
       - description
       - id
       - status
+    RoleEnum:
+      enum:
+      - accountant
+      - reviewer
+      - chief_accountant
+      - system_admin
+      type: string
+      description: |-
+        * `accountant` - Accountant
+        * `reviewer` - Reviewer
+        * `chief_accountant` - Chief accountant
+        * `system_admin` - System admin
+    RoleRequest:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+      required:
+      - role
     SideEnum:
       enum:
       - debit
@@ -3048,8 +3443,8 @@ components:
       - posted
       type: string
       description: |-
-        * `draft` - Draft
-        * `posted` - Posted
+        * `draft` - مسودة
+        * `posted` - معتمد
     StockLevelRow:
       type: object
       properties:
@@ -3111,6 +3506,13 @@ components:
       - rows
       - stock_total
       - total_value
+    TokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+      - token
     Transfer:
       type: object
       properties:
@@ -3298,11 +3700,11 @@ components:
       - expense
       type: string
       description: |-
-        * `asset` - Assets
-        * `liability` - Liabilities
-        * `equity` - Equity
-        * `revenue` - Revenue
-        * `expense` - Expenses
+        * `asset` - أصول
+        * `liability` - التزامات
+        * `equity` - حقوق ملكية
+        * `revenue` - إيرادات
+        * `expense` - مصروفات
     Unit:
       type: object
       properties:
@@ -3311,10 +3713,11 @@ components:
           readOnly: true
         name:
           type: string
+          title: الاسم
           maxLength: 50
         name_en:
           type: string
-          title: Name (English)
+          title: الاسم (بالإنجليزية)
           maxLength: 50
       required:
       - id
@@ -3325,10 +3728,11 @@ components:
         name:
           type: string
           minLength: 1
+          title: الاسم
           maxLength: 50
         name_en:
           type: string
-          title: Name (English)
+          title: الاسم (بالإنجليزية)
           maxLength: 50
       required:
       - name
@@ -3402,17 +3806,19 @@ components:
           readOnly: true
         code:
           type: string
+          title: الكود
           maxLength: 20
         name:
           type: string
+          title: الاسم
           maxLength: 100
         name_en:
           type: string
-          title: Name (English)
+          title: الاسم (بالإنجليزية)
           maxLength: 100
         is_active:
           type: boolean
-          title: Active
+          title: نشط
       required:
       - code
       - id
@@ -3423,18 +3829,20 @@ components:
         code:
           type: string
           minLength: 1
+          title: الكود
           maxLength: 20
         name:
           type: string
           minLength: 1
+          title: الاسم
           maxLength: 100
         name_en:
           type: string
-          title: Name (English)
+          title: الاسم (بالإنجليزية)
           maxLength: 100
         is_active:
           type: boolean
-          title: Active
+          title: نشط
       required:
       - code
       - name
@@ -3443,3 +3851,8 @@ components:
       type: apiKey
       in: cookie
       name: sessionid
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

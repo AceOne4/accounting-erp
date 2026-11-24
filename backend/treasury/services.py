@@ -224,6 +224,7 @@ def record_cash_count(*, company, user, box, count_date, quantities, notes="", a
                 LineInput(debit_account, debit=amount),
                 LineInput(credit_account, credit=amount),
             ],
+            source="cash_count",
         )
 
     return CashCount.objects.create(
